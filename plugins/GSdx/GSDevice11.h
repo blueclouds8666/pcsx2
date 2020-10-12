@@ -467,16 +467,22 @@ private:
 
 	// Shaders...
 
-	std::unordered_map<uint32, GSVertexShader11> m_vs;
+	hash_map<uint32, GSVertexShader11 > m_vs;
 	CComPtr<ID3D11Buffer> m_vs_cb;
-	std::unordered_map<uint32, CComPtr<ID3D11GeometryShader>> m_gs;
+	hash_map<uint32, CComPtr<ID3D11GeometryShader> > m_gs;
 	CComPtr<ID3D11Buffer> m_gs_cb;
-	std::unordered_map<uint64, CComPtr<ID3D11PixelShader>> m_ps;
+	hash_map<uint64, CComPtr<ID3D11PixelShader> > m_ps;
 	CComPtr<ID3D11Buffer> m_ps_cb;
-	std::unordered_map<uint32, CComPtr<ID3D11SamplerState>> m_ps_ss;
+	hash_map<uint32, CComPtr<ID3D11SamplerState> > m_ps_ss;
 	CComPtr<ID3D11SamplerState> m_palette_ss;
+<<<<<<< HEAD
 	std::unordered_map<uint32, CComPtr<ID3D11DepthStencilState>> m_om_dss;
 	std::unordered_map<uint32, CComPtr<ID3D11BlendState>> m_om_bs;
+=======
+	CComPtr<ID3D11SamplerState> m_rt_ss;
+	hash_map<uint32, CComPtr<ID3D11DepthStencilState> > m_om_dss;
+	hash_map<uint32, CComPtr<ID3D11BlendState> > m_om_bs;
+>>>>>>> parent of 2aeb406e3... gsdx: Remove hash_{map,set} macros
 
 	VSConstantBuffer m_vs_cb_cache;
 	GSConstantBuffer m_gs_cb_cache;

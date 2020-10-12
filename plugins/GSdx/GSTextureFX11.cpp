@@ -95,7 +95,7 @@ bool GSDevice11::CreateTextureFX()
 
 void GSDevice11::SetupVS(VSSelector sel, const VSConstantBuffer* cb)
 {
-	auto i = std::as_const(m_vs).find(sel);
+	hash_map<uint32, GSVertexShader11 >::const_iterator i = m_vs.find(sel);
 
 	if(i == m_vs.end())
 	{
@@ -146,7 +146,7 @@ void GSDevice11::SetupGS(GSSelector sel, const GSConstantBuffer* cb)
 	bool Unscale_GSShader = (sel.point == 1 || sel.line == 1);
 	if((sel.prim > 0 && (sel.iip == 0 || sel.prim == 3)) || Unscale_GSShader) // geometry shader works in every case, but not needed
 	{
-		auto i = std::as_const(m_gs).find(sel);
+		hash_map<uint32, CComPtr<ID3D11GeometryShader> >::const_iterator i = m_gs.find(sel);
 
 		if(i != m_gs.end())
 		{
@@ -182,7 +182,7 @@ void GSDevice11::SetupGS(GSSelector sel, const GSConstantBuffer* cb)
 
 void GSDevice11::SetupPS(PSSelector sel, const PSConstantBuffer* cb, PSSamplerSelector ssel)
 {
-	auto i = std::as_const(m_ps).find(sel);
+	hash_map<uint64, CComPtr<ID3D11PixelShader> >::const_iterator i = m_ps.find(sel);
 
 	if(i == m_ps.end())
 	{
@@ -247,7 +247,7 @@ void GSDevice11::SetupPS(PSSelector sel, const PSConstantBuffer* cb, PSSamplerSe
 			ssel.ltf = 0;
 		}
 
-		auto i = std::as_const(m_ps_ss).find(ssel);
+		hash_map<uint32, CComPtr<ID3D11SamplerState> >::const_iterator i = m_ps_ss.find(ssel);
 
 		if(i != m_ps_ss.end())
 		{
@@ -288,7 +288,7 @@ void GSDevice11::SetupPS(PSSelector sel, const PSConstantBuffer* cb, PSSamplerSe
 
 void GSDevice11::SetupOM(OMDepthStencilSelector dssel, OMBlendSelector bsel, uint8 afix)
 {
-	auto i = std::as_const(m_om_dss).find(dssel);
+	hash_map<uint32, CComPtr<ID3D11DepthStencilState> >::const_iterator i = m_om_dss.find(dssel);
 
 	if(i == m_om_dss.end())
 	{
@@ -337,7 +337,7 @@ void GSDevice11::SetupOM(OMDepthStencilSelector dssel, OMBlendSelector bsel, uin
 
 	OMSetDepthStencilState(i->second, 1);
 
-	auto j = std::as_const(m_om_bs).find(bsel);
+	hash_map<uint32, CComPtr<ID3D11BlendState> >::const_iterator j = m_om_bs.find(bsel);
 
 	if(j == m_om_bs.end())
 	{

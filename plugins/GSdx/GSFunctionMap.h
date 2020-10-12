@@ -38,8 +38,8 @@ protected:
 		VALUE f;
 	};
 
-	std::unordered_map<KEY, VALUE> m_map;
-	std::unordered_map<KEY, ActivePtr*> m_map_active;
+	hash_map<KEY, VALUE> m_map;
+	hash_map<KEY, ActivePtr*> m_map_active;
 
 	ActivePtr* m_active;
 
@@ -60,15 +60,15 @@ public:
 	{
 		m_active = NULL;
 
-		auto it = m_map_active.find(key);
+		typename hash_map<KEY, ActivePtr*>::iterator i = m_map_active.find(key);
 
-		if(it != m_map_active.end())
+		if(i != m_map_active.end())
 		{
-			m_active = it->second;
+			m_active = i->second;
 		}
 		else
 		{
-			auto i = m_map.find(key);
+			typename hash_map<KEY, VALUE>::iterator i = m_map.find(key);
 
 			ActivePtr* p = new ActivePtr();
 
@@ -108,9 +108,11 @@ public:
 	{
 		uint64 ttpf = 0;
 
-		for(const auto &i : m_map_active)
+		typename hash_map<KEY, ActivePtr*>::iterator i;
+
+		for(i = m_map_active.begin(); i != m_map_active.end(); ++i)
 		{
-			ActivePtr* p = i.second;
+			ActivePtr* p = i->second;
 
 			if(p->frames)
 			{
@@ -120,10 +122,10 @@ public:
 
 		printf("GS stats\n");
 
-		for (const auto &i : m_map_active)
+		for(i = m_map_active.begin(); i != m_map_active.end(); ++i)
 		{
-			KEY key = i.first;
-			ActivePtr* p = i.second;
+			KEY key = i->first;
+			ActivePtr* p = i->second;
 
 			if(p->frames && ttpf)
 			{
@@ -159,7 +161,7 @@ class GSCodeGeneratorFunctionMap : public GSFunctionMap<KEY, VALUE>
 {
 	std::string m_name;
 	void* m_param;
-	std::unordered_map<uint64, VALUE> m_cgmap;
+	hash_map<uint64, VALUE> m_cgmap;
 	GSCodeBuffer m_cb;
 	size_t m_total_code_size;
 
@@ -184,7 +186,7 @@ public:
 	{
 		VALUE ret = NULL;
 
-		auto i = m_cgmap.find(key);
+		typename hash_map<uint64, VALUE>::iterator i = m_cgmap.find(key);
 
 		if(i != m_cgmap.end())
 		{
