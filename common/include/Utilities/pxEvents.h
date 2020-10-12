@@ -81,7 +81,6 @@ public:
     {
     }
 
-    pxSimpleEvent(const pxSimpleEvent&) = default;
     virtual wxEvent *Clone() const { return new pxSimpleEvent(*this); }
 };
 
