@@ -2007,7 +2007,7 @@ void GSLocalMemory::ReadTextureBlock4HHP(uint32 bp, uint8* dst, int dstpitch, co
 
 //
 
-#include "Renderers/SW/GSTextureSW.h"
+#include "GSTextureSW.h"
 
 void GSLocalMemory::SaveBMP(const std::string& fn, uint32 bp, uint32 bw, uint32 psm, int w, int h)
 {

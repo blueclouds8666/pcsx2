@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "Window/GSDialog.h"
-#include "Window/GSSetting.h"
+#include "GSDialog.h"
+#include "GSSetting.h"
 
 class GPUSettingsDlg : public GSDialog
 {

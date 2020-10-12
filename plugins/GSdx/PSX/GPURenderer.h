@@ -22,10 +22,10 @@
 #pragma once
 
 #include "GPUState.h"
-#include "Renderers/Common/GSVertexList.h"
-#include "Renderers/Common/GSDevice.h"
+#include "GSVertexList.h"
+#include "GSDevice.h"
 #ifdef _WIN32
-#include "Window/GSWndDX.h"
+#include "GSWndDX.h"
 #endif
 
 class GPURenderer : public GPUState

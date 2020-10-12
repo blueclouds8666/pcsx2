@@ -23,7 +23,7 @@
 
 #include "stdafx.h"
 #include "GPUSetupPrimCodeGenerator.h"
-#include "Renderers/SW/GSVertexSW.h"
+#include "GSVertexSW.h"
 
 using namespace Xbyak;
 

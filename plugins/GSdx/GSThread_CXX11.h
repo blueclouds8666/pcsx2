@@ -22,7 +22,7 @@
 #pragma once
 
 #include "GSdx.h"
-#include "Utilities/boost_spsc_queue.hpp"
+#include "boost_spsc_queue.hpp"
 
 template<class T, int CAPACITY> class GSJobQueue final
 {

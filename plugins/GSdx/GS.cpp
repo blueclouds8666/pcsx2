@@ -22,28 +22,28 @@
 #include "stdafx.h"
 #include "GSdx.h"
 #include "GSUtil.h"
-#include "Renderers/SW/GSRendererSW.h"
-#include "Renderers/Null/GSRendererNull.h"
-#include "Renderers/Null/GSDeviceNull.h"
-#include "Renderers/OpenGL/GSDeviceOGL.h"
-#include "Renderers/OpenGL/GSRendererOGL.h"
-#include "Renderers/OpenCL/GSRendererCL.h"
+#include "GSRendererSW.h"
+#include "GSRendererNull.h"
+#include "GSDeviceNull.h"
+#include "GSDeviceOGL.h"
+#include "GSRendererOGL.h"
+#include "GSRendererCL.h"
 #include "GSLzma.h"
 
 #ifdef _WIN32
 
-#include "Renderers/DX11/GSRendererDX11.h"
-#include "Renderers/DX11/GSDevice11.h"
-#include "Window/GSWndDX.h"
-#include "Window/GSWndWGL.h"
-#include "Window/GSSettingsDlg.h"
+#include "GSRendererDX11.h"
+#include "GSDevice11.h"
+#include "GSWndDX.h"
+#include "GSWndWGL.h"
+#include "GSSettingsDlg.h"
 
 static HRESULT s_hr = E_FAIL;
 
 #else
 
-#include "Window/GSWndOGL.h"
-#include "Window/GSWndEGL.h"
+#include "GSWndOGL.h"
+#include "GSWndEGL.h"
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>

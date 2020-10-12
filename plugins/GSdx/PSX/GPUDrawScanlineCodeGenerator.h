@@ -22,7 +22,7 @@
 #pragma once
 
 #include "GPUScanlineEnvironment.h"
-#include "Renderers/Common/GSFunctionMap.h"
+#include "GSFunctionMap.h"
 
 using namespace Xbyak;
 

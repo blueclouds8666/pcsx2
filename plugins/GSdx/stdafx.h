@@ -133,7 +133,7 @@ typedef int64 sint64;
 	#include <GL/gl.h>
 	#include <GL/glext.h>
 	#include <GL/wglext.h>
-	#include "Renderers/OpenGL/GLLoader.h"
+	#include "GLLoader.h"
 
 	#define DIRECTORY_SEPARATOR '\\'
 
@@ -146,7 +146,7 @@ typedef int64 sint64;
 	//	* define all ENABLE_GL_VERSION_1_*
 	#include <GL/gl.h>
 	#include <GL/glext.h>
-	#include "Renderers/OpenGL/GLLoader.h"
+	#include "GLLoader.h"
 
 	#include <sys/stat.h> // mkdir
 
