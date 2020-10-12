@@ -34,7 +34,7 @@ PCSX2 XP running on Windows XP
 Latest stable build:
 - **Release date:**  12 Oct 2020
 - **Version number:**  v1.4.0
-- [32bit binary](TODO)
+- [32bit binary](https://github.com/blueclouds8666/pcsx2_XP/releases/download/v1.4.0/pcsx2-xp-binaries.7z)
 <br />
 
 ## Compiling
