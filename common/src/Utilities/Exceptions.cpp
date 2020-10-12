@@ -17,6 +17,7 @@
 
 #include <wx/app.h>
 #include "Threading.h"
+#include "TlsVariable.inl"
 
 #if defined(__UNIX__)
 #include <signal.h>

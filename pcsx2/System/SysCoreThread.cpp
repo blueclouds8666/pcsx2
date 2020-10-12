@@ -29,7 +29,7 @@
 #include "../DebugTools/SymbolMap.h"
 
 #include "Utilities/PageFaultSource.h"
-#include "Utilities/Threading.h"
+#include "Utilities/TlsVariable.inl"
 
 #ifdef __WXMSW__
 #	include <wx/msw/wrapwin.h>

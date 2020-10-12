@@ -124,6 +124,9 @@
     <None Include="..\..\include\Utilities\EventSource.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="..\..\include\Utilities\TlsVariable.inl">
+      <Filter>Header Files\Threading</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Utilities\ThreadingInternal.h">

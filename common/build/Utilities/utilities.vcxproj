@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Utilities\EventSource.inl" />
+    <None Include="..\..\include\Utilities\TlsVariable.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Utilities\EmbeddedImage.h" />
