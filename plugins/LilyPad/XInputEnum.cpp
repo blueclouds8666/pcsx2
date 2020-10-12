@@ -16,7 +16,6 @@
  */
 
 #include "Global.h"
-#include <VersionHelpers.h>
 #include <xinput.h>
 #include "VKey.h"
 #include "InputManager.h"
@@ -261,45 +260,43 @@ public:
         }
     }
 
+
     ~XInputDevice()
     {
     }
 };
 
-void EnumXInputDevices()
-{
-    wchar_t temp[30];
-    if (!pXInputSetState) {
-        // XInput not installed, so don't repeatedly try to load it.
-        if (xinputNotInstalled)
-            return;
 
-        // Prefer XInput 1.3 since SCP only has an XInput 1.3 wrapper right now.
-        // Also use LoadLibrary and not LoadLibraryEx for XInput 1.3, since some
-        // Windows 7 systems have issues with it.
-        // FIXME: Missing FreeLibrary call.
-        HMODULE hMod = LoadLibrary(L"xinput1_3.dll");
-        if (hMod == nullptr && IsWindows8OrGreater()) {
-            hMod = LoadLibraryEx(L"XInput1_4.dll", nullptr, LOAD_LIBRARY_SEARCH_APPLICATION_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32);
-        }
+void EnumXInputDevices() {
+	int i;
+	wchar_t temp[30];
+	if (!pXInputSetState) {
+		// Also used as flag to indicute XInput not installed, so
+		// don't repeatedly try to load it.
+		if (pXInputEnable) return;
 
-        if (hMod) {
-            if ((pXInputEnable = (_XInputEnable)GetProcAddress(hMod, "XInputEnable")) &&
-                ((pXInputGetStateEx = (_XInputGetStateEx)GetProcAddress(hMod, (LPCSTR)100)) || // Try Ex version first
-                 (pXInputGetStateEx = (_XInputGetStateEx)GetProcAddress(hMod, "XInputGetState")))) {
-                pXInputGetExtended = (_XInputGetExtended)GetProcAddress(hMod, "XInputGetExtended");
-                pXInputSetState = (_XInputSetState)GetProcAddress(hMod, "XInputSetState");
-            }
-        }
-        if (!pXInputSetState) {
-            xinputNotInstalled = true;
-            return;
-        }
-    }
-    pXInputEnable(1);
-    for (int i = 0; i < 4; i++) {
-        wsprintfW(temp, L"XInput Pad %i", i);
-        dm->AddDevice(new XInputDevice(i, temp));
-    }
-    pXInputEnable(0);
+		HMODULE hMod = 0;
+		for (i=3; i>= 0; i--) {
+			wsprintfW(temp, L"xinput1_%i.dll", i);
+			if (hMod = LoadLibraryW(temp)) break;
+		}
+		if (hMod) {
+			if ((pXInputEnable = (_XInputEnable) GetProcAddress(hMod, "XInputEnable")) &&
+				((pXInputGetStateEx = (_XInputGetStateEx) GetProcAddress(hMod, (LPCSTR)100)) || // Try Ex version first
+				 (pXInputGetStateEx = (_XInputGetStateEx) GetProcAddress(hMod, "XInputGetState")))) {
+					pXInputGetExtended = (_XInputGetExtended)GetProcAddress(hMod, "XInputGetExtended");
+					pXInputSetState = (_XInputSetState) GetProcAddress(hMod, "XInputSetState");
+			}
+		}
+		if (!pXInputSetState) {
+			pXInputEnable = (_XInputEnable)-1;
+			return;
+		}
+	}
+	pXInputEnable(1);
+	for (i=0; i<4; i++) {
+		wsprintfW(temp, L"XInput Pad %i", i);
+		dm->AddDevice(new XInputDevice(i, temp));
+	}
+	pXInputEnable(0);
 }
