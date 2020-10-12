@@ -110,7 +110,7 @@ void GSDevice11::SetupVS(VSSelector sel, const VSConstantBuffer* cb)
 		str[2] = format("%d", sel.fst);
 		str[3] = format("%d", sel.rtcopy);
 
-		D3D_SHADER_MACRO macro[] =
+		D3D11_SHADER_MACRO macro[] =
 		{
 			{"VS_BPPZ", str[0].c_str()},
 			{"VS_TME", str[1].c_str()},
@@ -134,7 +134,7 @@ void GSDevice11::SetupVS(VSSelector sel, const VSConstantBuffer* cb)
 
 		std::vector<char> shader;
 		theApp.LoadResource(IDR_TFX_FX, shader);
-		CompileShader(shader.data(), shader.size(), "tfx.fx", nullptr, "vs_main", macro, &vs.vs, layout, countof(layout), &vs.il);
+		CompileShader((const char *)shader.data(), shader.size(), "tfx.fx", "vs_main", macro, &vs.vs, layout, countof(layout), &vs.il);
 
 		m_vs[sel] = vs;
 
@@ -175,7 +175,7 @@ void GSDevice11::SetupGS(GSSelector sel, const GSConstantBuffer* cb)
 			str[2] = format("%d", sel.point);
 			str[3] = format("%d", sel.line);
 
-			D3D_SHADER_MACRO macro[] =
+			D3D11_SHADER_MACRO macro[] =
 			{
 				{"GS_IIP", str[0].c_str()},
 				{"GS_PRIM", str[1].c_str()},
@@ -186,7 +186,7 @@ void GSDevice11::SetupGS(GSSelector sel, const GSConstantBuffer* cb)
 
 			std::vector<char> shader;
 			theApp.LoadResource(IDR_TFX_FX, shader);
-			CompileShader(shader.data(), shader.size(), "tfx.fx", nullptr, "gs_main", macro, &gs);
+			CompileShader((const char *)shader.data(), shader.size(), "tfx.fx", "gs_main", macro, &gs);
 
 			m_gs[sel] = gs;
 		}
@@ -233,7 +233,7 @@ void GSDevice11::SetupPS(PSSelector sel, const PSConstantBuffer* cb, PSSamplerSe
 		str[19] = format("%d", sel.read_ba);
 		str[20] = format("%d", sel.fmt >> 2);
 
-		D3D_SHADER_MACRO macro[] =
+		D3D11_SHADER_MACRO macro[] =
 		{
 			{"PS_FST", str[0].c_str()},
 			{"PS_WMS", str[1].c_str()},
@@ -263,7 +263,7 @@ void GSDevice11::SetupPS(PSSelector sel, const PSConstantBuffer* cb, PSSamplerSe
 
 		std::vector<char> shader;
 		theApp.LoadResource(IDR_TFX_FX, shader);
-		CompileShader(shader.data(), shader.size(), "tfx.fx", nullptr, "ps_main", macro, &ps);
+		CompileShader((const char *)shader.data(), shader.size(), "tfx.fx", "ps_main", macro, &ps);
 
 		m_ps[sel] = ps;
 

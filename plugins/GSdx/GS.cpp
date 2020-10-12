@@ -153,10 +153,11 @@ EXPORT_C_(int) GSinit()
 
 	s_hr = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
-	if (!GSDeviceDX::LoadD3DCompiler())
+	if(!GSUtil::CheckDirectX())
 	{
 		return -1;
 	}
+
 #endif
 
 	return 0;
@@ -179,8 +180,6 @@ EXPORT_C GSshutdown()
 
 		s_hr = E_FAIL;
 	}
-
-	GSDeviceDX::FreeD3DCompiler();
 
 #endif
 }

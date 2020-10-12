@@ -75,7 +75,7 @@ void GSDevice9::SetupVS(VSSelector sel, const VSConstantBuffer* cb)
 		str[3] = format("%d", sel.logz);
 		str[4] = format("%d", sel.rtcopy);
 
-		D3D_SHADER_MACRO macro[] =
+		D3DXMACRO macro[] =
 		{
 			{"VS_BPPZ", str[0].c_str()},
 			{"VS_TME", str[1].c_str()},
@@ -98,7 +98,7 @@ void GSDevice9::SetupVS(VSSelector sel, const VSConstantBuffer* cb)
 
 		std::vector<char> shader;
 		theApp.LoadResource(IDR_TFX_FX, shader);
-		CompileShader(shader.data(), shader.size(), "tfx.fx", "vs_main", macro, &vs.vs, layout, countof(layout), &vs.il);
+		CompileShader((const char *)shader.data(), shader.size(), "vs_main", macro, &vs.vs, layout, countof(layout), &vs.il);
 
 		m_vs[sel] = vs;
 
@@ -158,7 +158,7 @@ void GSDevice9::SetupPS(PSSelector sel, const PSConstantBuffer* cb, PSSamplerSel
 		str[16] = format("%d", sel.point_sampler);
 		str[17] = format("%d", sel.fmt >> 2);
 
-		D3D_SHADER_MACRO macro[] =
+		D3DXMACRO macro[] =
 		{
 			{"PS_FST", str[0].c_str()},
 			{"PS_WMS", str[1].c_str()},
@@ -185,7 +185,7 @@ void GSDevice9::SetupPS(PSSelector sel, const PSConstantBuffer* cb, PSSamplerSel
 
 		std::vector<char> shader;
 		theApp.LoadResource(IDR_TFX_FX, shader);
-		CompileShader(shader.data(), shader.size(), "tfx.fx", "ps_main", macro, &ps);
+		CompileShader((const char *)shader.data(), shader.size(), "ps_main", macro, &ps);
 
 		m_ps[sel] = ps;
 
