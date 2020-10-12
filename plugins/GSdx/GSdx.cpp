@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "GSdx.h"
 #include "GS.h"
-#include "PSX/GPU.h"
+#include "GPU.h"
 
 static void* s_hModule;
 

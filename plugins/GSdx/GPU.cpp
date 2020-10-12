@@ -22,8 +22,8 @@
 #include "stdafx.h"
 #include "GSdx.h"
 #include "GSUtil.h"
-#include "GSDeviceNull.h"
 #include "GPURendererSW.h"
+#include "GSDeviceNull.h"
 
 #ifdef _WIN32
 
