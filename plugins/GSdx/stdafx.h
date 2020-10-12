@@ -116,6 +116,9 @@ typedef int64 sint64;
 #include <mutex>
 #include <condition_variable>
 #include <functional>
+
+using namespace std;
+
 #include <memory>
 #include <bitset>
 
