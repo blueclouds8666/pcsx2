@@ -34,8 +34,8 @@ PCSX2 XP running on Windows XP
 Latest stable build:
 - **Release date:**  12 Oct 2020
 - **Version number:**  v1.6.0
-- [32bit binary](TODO)
-- [TAS enabled version](TODO)
+- [32bit binary](https://github.com/blueclouds8666/pcsx2_XP/releases/download/v1.6.0/pcsx2-xp-binaries.7z)
+- [TAS enabled version](https://github.com/blueclouds8666/pcsx2_XP/releases/download/v1.6.0/pcsx2-xp-tasenabled-binaries.7z)
 
 Also available:
 - **v1.5.0-dev from 2018:** [click here](https://github.com/blueclouds8666/pcsx2_XP/tree/release-1.5.0)
