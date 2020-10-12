@@ -30,7 +30,7 @@ GSTexture* GSDevice9::CreateMskFix(uint32 size, uint32 msk, uint32 fix)
 
 	uint32 hash = (size << 20) | (msk << 10) | fix;
 
-	auto i = m_mskfix.find(hash);
+	hash_map<uint32, GSTexture*>::iterator i = m_mskfix.find(hash);
 
 	if(i != m_mskfix.end())
 	{
@@ -63,7 +63,7 @@ GSTexture* GSDevice9::CreateMskFix(uint32 size, uint32 msk, uint32 fix)
 
 void GSDevice9::SetupVS(VSSelector sel, const VSConstantBuffer* cb)
 {
-	auto i = std::as_const(m_vs).find(sel);
+	hash_map<uint32, GSVertexShader9>::const_iterator i = m_vs.find(sel);
 
 	if(i == m_vs.end())
 	{
@@ -133,7 +133,7 @@ void GSDevice9::SetupPS(PSSelector sel, const PSConstantBuffer* cb, PSSamplerSel
 		}
 	}
 
-	auto i = std::as_const(m_ps).find(sel);
+	hash_map<uint64, CComPtr<IDirect3DPixelShader9> >::const_iterator i = m_ps.find(sel);
 
 	if(i == m_ps.end())
 	{
@@ -203,7 +203,7 @@ void GSDevice9::SetupPS(PSSelector sel, const PSConstantBuffer* cb, PSSamplerSel
 			ssel.ltf = 0;
 		}
 
-		auto i = std::as_const(m_ps_ss).find(ssel);
+		hash_map<uint32, Direct3DSamplerState9* >::const_iterator i = m_ps_ss.find(ssel);
 
 		if(i != m_ps_ss.end())
 		{
@@ -240,7 +240,7 @@ void GSDevice9::SetupOM(OMDepthStencilSelector dssel, OMBlendSelector bsel, uint
 {
 	Direct3DDepthStencilState9* dss = NULL;
 
-	auto i = std::as_const(m_om_dss).find(dssel);
+	hash_map<uint32, Direct3DDepthStencilState9*>::const_iterator i = m_om_dss.find(dssel);
 
 	if(i == m_om_dss.end())
 	{
@@ -282,7 +282,7 @@ void GSDevice9::SetupOM(OMDepthStencilSelector dssel, OMBlendSelector bsel, uint
 
 	OMSetDepthStencilState(i->second);
 
-	auto j = std::as_const(m_om_bs).find(bsel);
+	hash_map<uint32, Direct3DBlendState9*>::const_iterator j = m_om_bs.find(bsel);
 
 	if(j == m_om_bs.end())
 	{
