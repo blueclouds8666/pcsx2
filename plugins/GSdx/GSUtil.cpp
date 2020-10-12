@@ -23,8 +23,6 @@
 #include "GSUtil.h"
 
 #ifdef _WIN32
-#include "GSDeviceDX.h"
-#include <VersionHelpers.h>
 #include "svnrev.h"
 #else
 #define SVN_REV 0
@@ -341,22 +339,43 @@ std::string GSUtil::GetDeviceUniqueName(cl::Device& device)
 
 bool GSUtil::CheckDirectX()
 {
-	if (GSDevice11::LoadD3DCompiler())
+	OSVERSIONINFOEX version;
+	memset(&version, 0, sizeof(version));
+	version.dwOSVersionInfoSize = sizeof(version);
+
+	if(GetVersionEx((OSVERSIONINFO*)&version))
 	{
-		GSDevice11::FreeD3DCompiler();
-		return true;
+		printf("Windows %d.%d.%d", version.dwMajorVersion, version.dwMinorVersion, version.dwBuildNumber);
+
+		if(version.wServicePackMajor > 0)
+		{
+			printf(" (%s %d.%d)", version.szCSDVersion, version.wServicePackMajor, version.wServicePackMinor);
+		}
+
+		printf("\n");
 	}
 
-	// User's system is likely broken if it fails and is Windows 8.1 or greater.
-	if (!IsWindows8Point1OrGreater())
+	string d3dx9_dll = format("d3dx9_%d.dll", D3DX_SDK_VERSION);
+
+	if(HINSTANCE hDll = LoadLibrary(d3dx9_dll.c_str()))
 	{
-		printf("Cannot find d3dcompiler_43.dll\n");
-		if (MessageBox(nullptr, TEXT("You need to update some DirectX libraries, would you like to do it now?"), TEXT("GSdx"), MB_YESNO) == IDYES)
-		{
-			ShellExecute(nullptr, TEXT("open"), TEXT("https://www.microsoft.com/en-us/download/details.aspx?id=8109"), nullptr, nullptr, SW_SHOWNORMAL);
-		}
+		FreeLibrary(hDll);
 	}
-	return false;
+	else
+	{
+		printf("Cannot find %s\n", d3dx9_dll.c_str());
+
+		if(MessageBox(NULL, "You need to update some directx libraries, would you like to do it now?", "GSdx", MB_YESNO) == IDYES)
+		{
+			const char* url = "https://www.microsoft.com/en-us/download/details.aspx?id=8109";
+
+			ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
+		}
+
+		return false;
+	}
+
+	return true;
 }
 
 // ---------------------------------------------------------------------------------
@@ -413,23 +432,9 @@ D3D_FEATURE_LEVEL GSUtil::CheckDirect3D11Level(IDXGIAdapter *adapter, D3D_DRIVER
 
 GSRendererType GSUtil::GetBestRenderer()
 {
-	CComPtr<IDXGIFactory1> dxgi_factory;
-	if (SUCCEEDED(CreateDXGIFactory1(IID_PPV_ARGS(&dxgi_factory))))
-	{
-		CComPtr<IDXGIAdapter1> adapter;
-		if (SUCCEEDED(dxgi_factory->EnumAdapters1(0, &adapter)))
-		{
-			DXGI_ADAPTER_DESC1 desc;
-			if (SUCCEEDED(adapter->GetDesc1(&desc)))
-			{
-				D3D_FEATURE_LEVEL level = GSUtil::CheckDirect3D11Level();
-				// Check for Nvidia VendorID. Latest OpenGL features need at least DX11 level GPU
-				if (desc.VendorId == 0x10DE && level >= D3D_FEATURE_LEVEL_11_0)
+	
 					return GSRendererType::OGL_HW;
-			}
-		}
-	}
-	return GSRendererType::DX1011_HW;
+
 }
 
 #endif
