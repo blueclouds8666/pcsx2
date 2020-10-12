@@ -98,7 +98,6 @@ EXPORT_C_(int32) GPUclose()
 	s_gpu = NULL;
 
 #ifdef _WIN32
-	GSDevice11::FreeD3DCompiler();
 
 	if(SUCCEEDED(s_hr))
 	{
@@ -130,8 +129,6 @@ EXPORT_C_(int32) GPUopen(void* hWnd)
 		return -1;
 	}
 
-	if (!GSDevice11::LoadD3DCompiler())
-		return -1;
 #endif
 
 	GPURendererType renderer = static_cast<GPURendererType>(theApp.GetConfigI("Renderer"));
