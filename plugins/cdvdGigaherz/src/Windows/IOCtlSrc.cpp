@@ -15,20 +15,17 @@
  */
 
 #include "../CDVD.h"
-
+#pragma warning(disable:4200)
+#pragma pack(1)
 #include <winioctl.h>
-#include <ntddcdvd.h>
-#include <ntddcdrm.h>
-// "typedef ignored" warning will disappear once we move to the Windows 10 SDK.
-#pragma warning(push)
-#pragma warning(disable : 4091)
-#include <ntddscsi.h>
-#pragma warning(pop)
 
-#include <cstddef>
-#include <cstdlib>
 #include <array>
-#include <stdexcept>
+#include "rosddk/ntddcdvd.h"
+#include "rosddk/ntddcdrm.h"
+#include "rosddk/ntddscsi.h"
+#pragma warning(default:4200)
+#include <stddef.h>
+#include <intrin.h>
 
 IOCtlSrc::IOCtlSrc(decltype(m_filename) filename)
     : m_filename(filename)
