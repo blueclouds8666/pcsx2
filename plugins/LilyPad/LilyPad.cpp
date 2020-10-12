@@ -31,11 +31,11 @@
 #include "DeviceEnumerator.h"
 #ifdef _MSC_VER
 #include "WndProcEater.h"
-#include "HidDevice.h"
 #endif
 #include "KeyboardQueue.h"
 #include "svnrev.h"
 #include "DualShock3.h"
+#include "HidDevice.h"
 
 #define WMA_FORCE_UPDATE (WM_APP + 0x537)
 #define FORCE_UPDATE_WPARAM ((WPARAM)0x74328943)
@@ -328,21 +328,22 @@ void UpdateEnabledDevices(int updateList = 0)
 }
 
 #ifdef _MSC_VER
-BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, void *lpvReserved)
-{
-    hInst = hInstance;
-    if (fdwReason == DLL_PROCESS_ATTACH) {
-        InitializeCriticalSection(&updateLock);
+BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, void* lpvReserved) {
+	hInst = hInstance;
+	if (fdwReason == DLL_PROCESS_ATTACH) {
+		InitializeCriticalSection( &updateLock );
 
-        DisableThreadLibraryCalls(hInstance);
-    } else if (fdwReason == DLL_PROCESS_DETACH) {
-        while (openCount)
-            PADclose();
-        PADshutdown();
-        UninitLibUsb();
-        DeleteCriticalSection(&updateLock);
-    }
-    return 1;
+		DisableThreadLibraryCalls(hInstance);
+	}
+	else if (fdwReason == DLL_PROCESS_DETACH) {
+		while (openCount)
+			PADclose();
+		PADshutdown();
+		UninitHid();
+		UninitLibUsb();
+		DeleteCriticalSection( &updateLock );
+	}
+	return 1;
 }
 #endif
 
