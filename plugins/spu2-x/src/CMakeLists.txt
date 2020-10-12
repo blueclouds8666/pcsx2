@@ -72,11 +72,10 @@ if(Windows)
         Windows/SndOut_waveOut.cpp
         Windows/SndOut_DSound.cpp
         Windows/SndOut_XAudio2_27.cpp
-        Windows/SndOut_XAudio2.cpp
-        Windows/SndOut_XAudio2.inl
         Windows/UIHelpers.cpp
         Windows/RealtimeDebugger.cpp
         Windows/dsp.cpp
+        Windows/SndOut_XAudio2.cpp
         Windows/ConfigSoundtouch.cpp
         )
 
