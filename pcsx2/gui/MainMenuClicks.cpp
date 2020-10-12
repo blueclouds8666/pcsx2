@@ -501,9 +501,8 @@ void MainEmuFrame::Menu_EnableRecordingTools_Click(wxCommandEvent&)
 	// Confirm with User
 	if (checked)
 	{
-		if (!Msgbox::OkCancel(_("Please be aware that PCSX2's input recording features are still very much a work-in-progress.\n"
-			"As a result, there may be unforeseen bugs, performance implications and instability with certain games.\n\n"
-			"These tools are provided as-is and should be enabled under your own discretion."), "Enabling Recording Tools"))
+		if (!Msgbox::OkCancel(_("Please be aware that PCSX2's input recording features are still very much a work-in-progress.\n As a result, there may be unforeseen bugs, performance implications and instability with certain games.\n\n These tools are provided as-is and should be enabled under your own discretion."), "Enabling Recording Tools"))
+
 		{
 			checked = false;
 			m_menuSys.FindChildItem(MenuId_EnableRecordingTools)->Check(false);

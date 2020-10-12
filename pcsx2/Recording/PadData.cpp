@@ -144,68 +144,68 @@ void PadData::GetKeyBit(wxByte keybit[2], PadData_NormalButton button) const
 	switch (button)
 	{
 		case PadData_NormalButton_LEFT:
-			keybit[0] = 0b10000000;
-			keybit[1] = 0b00000000;
+			keybit[0] = 0x10000000;
+			keybit[1] = 0x00000000;
 			break;
 		case PadData_NormalButton_DOWN:
-			keybit[0] = 0b01000000;
-			keybit[1] = 0b00000000;
+			keybit[0] = 0x01000000;
+			keybit[1] = 0x00000000;
 			break;
 		case PadData_NormalButton_RIGHT:
-			keybit[0] = 0b00100000;
-			keybit[1] = 0b00000000;
+			keybit[0] = 0x00100000;
+			keybit[1] = 0x00000000;
 			break;
 		case PadData_NormalButton_UP:
-			keybit[0] = 0b00010000;
-			keybit[1] = 0b00000000;
+			keybit[0] = 0x00010000;
+			keybit[1] = 0x00000000;
 			break;
 		case PadData_NormalButton_START:
-			keybit[0] = 0b00001000;
-			keybit[1] = 0b00000000;
+			keybit[0] = 0x00001000;
+			keybit[1] = 0x00000000;
 			break;
 		case PadData_NormalButton_R3:
-			keybit[0] = 0b00000100;
-			keybit[1] = 0b00000000;
+			keybit[0] = 0x00000100;
+			keybit[1] = 0x00000000;
 			break;
 		case PadData_NormalButton_L3:
-			keybit[0] = 0b00000010;
-			keybit[1] = 0b00000000;
+			keybit[0] = 0x00000010;
+			keybit[1] = 0x00000000;
 			break;
 		case PadData_NormalButton_SELECT:
-			keybit[0] = 0b00000001;
-			keybit[1] = 0b00000000;
+			keybit[0] = 0x00000001;
+			keybit[1] = 0x00000000;
 			break;
 		case PadData_NormalButton_SQUARE:
-			keybit[0] = 0b00000000;
-			keybit[1] = 0b10000000;
+			keybit[0] = 0x00000000;
+			keybit[1] = 0x10000000;
 			break;
 		case PadData_NormalButton_CROSS:
-			keybit[0] = 0b00000000;
-			keybit[1] = 0b01000000;
+			keybit[0] = 0x00000000;
+			keybit[1] = 0x01000000;
 			break;
 		case PadData_NormalButton_CIRCLE:
-			keybit[0] = 0b00000000;
-			keybit[1] = 0b00100000;
+			keybit[0] = 0x00000000;
+			keybit[1] = 0x00100000;
 			break;
 		case PadData_NormalButton_TRIANGLE:
-			keybit[0] = 0b00000000;
-			keybit[1] = 0b00010000;
+			keybit[0] = 0x00000000;
+			keybit[1] = 0x00010000;
 			break;
 		case PadData_NormalButton_R1:
-			keybit[0] = 0b00000000;
-			keybit[1] = 0b00001000;
+			keybit[0] = 0x00000000;
+			keybit[1] = 0x00001000;
 			break;
 		case PadData_NormalButton_L1:
-			keybit[0] = 0b00000000;
-			keybit[1] = 0b00000100;
+			keybit[0] = 0x00000000;
+			keybit[1] = 0x00000100;
 			break;
 		case PadData_NormalButton_R2:
-			keybit[0] = 0b00000000;
-			keybit[1] = 0b00000010;
+			keybit[0] = 0x00000000;
+			keybit[1] = 0x00000010;
 			break;
 		case PadData_NormalButton_L2:
-			keybit[0] = 0b00000000;
-			keybit[1] = 0b00000001;
+			keybit[0] = 0x00000000;
+			keybit[1] = 0x00000001;
 			break;
 		default:
 			keybit[0] = 0;

@@ -23,9 +23,9 @@
 struct InputRecordingHeader
 {
 	u8 version = 1;
-	char emu[50] = "PCSX2-1.5.X";
-	char author[255] = "";
-	char gameName[255] = "";
+	char emu[50];
+	char author[255];
+	char gameName[255];
 
 public:
 	void SetAuthor(wxString author);
