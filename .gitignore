@@ -108,7 +108,10 @@ oprofile_data/
 /tools/bin
 /tools/GSDumpGUI/bin
 /tools/GSDumpGUI/obj
+<<<<<<< HEAD
 .vs
 
 /pcsx2/windows/VCprojects/GSdx_opengl_debug_hw.txt
 /pcsx2/windows/VCprojects/GSdx_opengl_debug_sw.txt
+=======
+>>>>>>> parent of 11aebe465... common: Replace __threadlocal with C++11 thread_local
