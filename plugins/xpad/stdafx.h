@@ -12,6 +12,7 @@
 #include <commctrl.h>
 #include <commdlg.h>
 #include <shellapi.h>
+#include <xinput.h>
 
 #include <assert.h>
 #include <time.h>
