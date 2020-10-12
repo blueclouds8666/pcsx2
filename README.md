@@ -1,48 +1,62 @@
-# PCSX2
-[![Travis Build Status](https://travis-ci.org/PCSX2/pcsx2.svg?branch=master)](https://travis-ci.org/PCSX2/pcsx2) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/b67odm0dd506co78/branch/master?svg=true)](https://ci.appveyor.com/project/gregory38/pcsx2/branch/master) [![Coverity Scan Build Status](https://scan.coverity.com/projects/6310/badge.svg)](https://scan.coverity.com/projects/6310)
+# PCSX2 XP - The PlayStation 2 Emulator
 
-PCSX2 is a free and open-source PlayStation 2 (PS2) emulator. Its purpose is to emulate the PS2's hardware, using a combination of MIPS CPU [Interpreters](https://en.wikipedia.org/wiki/Interpreter_\(computing\)), [Recompilers](https://en.wikipedia.org/wiki/Dynamic_recompilation) and a [Virtual Machine](https://en.wikipedia.org/wiki/Virtual_machine) which manages hardware states and PS2 system memory. This allows you to play PS2 games on your PC, with many additional features and benefits.
+PCSX2 is a free and open-source PlayStation 2 (PS2) emulator. Its purpose is to emulate the PS2's hardware, using a combination of MIPS CPU [Interpreters](<https://en.wikipedia.org/wiki/Interpreter_(computing)>), [Recompilers](https://en.wikipedia.org/wiki/Dynamic_recompilation) and a [Virtual Machine](https://en.wikipedia.org/wiki/Virtual_machine) which manages hardware states and PS2 system memory. This allows you to play PS2 games on your PC, with many additional features and benefits.
 
-# Project Details
+As the original developers decided to remove Windows XP support back in 2016, we wanted to bring back compatibility with said operating system. Wasn't an easy task, but now XP users can finally enjoy from the latest version of this great emulator.
 
-The PCSX2 project has been running for more than ten years. Past versions could only run a few public domain game demos, but newer versions can run most games at full speed, including popular titles such as Final Fantasy X and Devil May Cry 3. Visit the [PCSX2 compatibility list](https://pcsx2.net/compatibility-list.html) to check the latest compatibility status of games (with more than 2500 titles tested), or ask for help in the [official forums](https://forums.pcsx2.net/).
+## Screenshots
 
-The latest officially released stable version is version 1.6.0.
+PCSX2 XP running on Windows XP
 
-Installers and binaries for both Windows and Linux are available from [our website](https://pcsx2.net/download.html).
+![PCSX2](screenshot.png)
 
-Development builds are also available from [our website](https://pcsx2.net/download/development.html).
-
-# System Requirements
+## System Requirements
 
 #### Minimum
+| Windows XP (32 or 64 bits) |
+|:-------|
+| DirectX Jun2010 Update. Visual C++ 2013 Redistributable. |
+| **Any CPU compatible with SSE2:** AMD Athlon II or AMD Phenom. Intel Core 2 Duo. |
+| **Any GPU compatible with OpenGL 3.3:** NVIDIA GTS 450. Radeon HD 5770. |
+| 2 GB RAM |
 
-| Operating System | CPU | GPU | RAM |
-| --- | --- | --- | --- |
-| - Windows 7 or newer (32 or 64 bit) <br/> - Ubuntu 18.04/Debian or newer, Arch Linux, or other distro (32 or 64 bit) | - Supports SSE2 <br/> - [PassMark Single Thread Performance](https://www.cpubenchmark.net/singleThread.html) rating near or greater than 1600 <br/> - Two physical cores, with hyperthreading | - Direct3D10 support <br/> - OpenGL 3.x support <br/> - [PassMark G3D Mark](https://www.videocardbenchmark.net/high_end_gpus.html) rating around 3000 (GeForce GTX 750) <br/> - 2 GB Video Memory | 4 GB |
+#### Recommended
+| Windows XP (32 or 64 bits) |
+|:-------|
+| DirectX Jun2010 Update. Visual C++ 2013 Redistributable. |
+| **Processor:** AMD FX-4300. Intel Core i5-2400. |
+| **Graphics Card:** NVIDIA GTX 750. Radeon HD 7850. |
+| 4 GB RAM |
+<br />
 
-*Note: Recommended Single Thread Performance is based on moderately complex games. Games that pushed the PS2 hardware to its limits will struggle on CPUs at this level. Some release titles and 2D games which underutilized the PS2 hardware may run on CPUs rated as low as 1200. A quick reference for CPU **intensive games**: [Wiki](https://wiki.pcsx2.net/Category:CPU_intensive_games), [Forum](https://forums.pcsx2.net/Thread-LIST-The-Most-CPU-Intensive-Games) and CPU **light** games: [Forum](https://forums.pcsx2.net/Thread-LIST-Games-that-don-t-need-a-strong-CPU-to-emulate)*
+## Released Versions
 
-#### Recommended 
+Latest stable build:
+- **Release date:**  12 Oct 2020
+- **Version number:**  v1.6.0
+- [32bit binary](TODO)
+- [TAS enabled version](TODO)
 
-| Operating System | CPU | GPU | RAM |
-| --- | --- | --- | --- |
-| - Windows 10 (64 bit) <br/> - Ubuntu 19.04/Debian or newer, Arch Linux, or other distro (64 bit) | - Supports AVX2 <br/> - [PassMark Single Thread Performance](https://www.cpubenchmark.net/singleThread.html) rating near or greater than 2100 <br/> - Four physical cores, with or without hyperthreading | - Direct3D11 support <br/> - OpenGL 4.5 support <br/> - [PassMark G3D Mark](https://www.videocardbenchmark.net/high_end_gpus.html) rating around 6000 (GeForce GTX 1050 Ti) <br/> - 4 GB Video Memory | 8 GB |
+Also available:
+- **v1.5.0-dev from 2018:** [click here](https://github.com/blueclouds8666/pcsx2_XP/tree/release-1.5.0)
+- **v1.4.0 from 2016:** [click here](https://github.com/blueclouds8666/pcsx2_XP/tree/release-1.4.0)
+<br />
 
-*Note: Recommended GPU is based on 3x Internal, ~1080p resolution requirements. Higher resolutions will require stronger cards; 6x Internal, ~4K resolution will require a [PassMark G3D Mark](https://www.videocardbenchmark.net/high_end_gpus.html) rating around 12000 (GeForce GTX 1070 Ti). Just like CPU requirements, this is also highly game dependent. A quick reference for GPU **intensive games**:  [Wiki](https://wiki.pcsx2.net/Category:GPU_intensive_games)*
+## Compiling
 
-## Technical Notes
+Building PCSX2 XP from source can be easily done by following [these steps](COMPILE.md).
 
-- You need the [Visual C++ 2019 x86 Redistributables](https://support.microsoft.com/en-us/help/2977003/) to run PCSX2.
-- Windows XP and DirectX 9 support was dropped after stable release 1.4.0
-- Windows 7 support will be dropped after stable release 1.6.0
-- Make sure to update your operating system, drivers, and DirectX (if applicable) to ensure you have the best experience possible. Having a newer GPU is also recommended so you have the latest supported drivers.
-- Because of copyright issues, and the complexity of trying to work around it, you need a BIOS dump extracted from a legitimately-owned PS2 console to use the emulator. For more information about the BIOS and how to get it from your console, visit [this page](https://pcsx2.net/config-guide/official-english-pcsx2-configuration-guide.html#Bios).
-- PCSX2 uses two CPU cores for emulation by default. A third core can be used via the MTVU speed hack, which is compatible with most games. This can be a significant speedup on CPUs with 3+ cores, but it may be a slowdown on GS-limited games (or on CPUs with fewer than 2 cores). Software renderers will then additionally use however many rendering threads it is set to and will need higher core counts to run efficiently.
-- Requirements benchmarks are based on a statistic from the Passmark CPU bench marking software. When we say "STR", we are referring to Passmark's "Single Thread Rating" statistic. You can look up your CPU on [Passmark's website for CPUs](https://cpubenchmark.net) to see how it compares to PCSX2's requirements.
+If you are adventurous, you might want to try the [experimental compiling guide](COMPILE-TESTING.md).
+<br />
+<br />
 
-# Screenshots
+## Dev team
 
-![Okami](https://pcsx2.net/images/stories/gitsnaps/okami_n1s.jpg "Okami")       ![Final Fantasy XII](https://pcsx2.net/images/stories/gitsnaps/finalfantasy12izjs_s2.jpg "Final Fantasy XII")       ![Shadow of the Colossus](https://pcsx2.net/images/stories/gitsnaps/sotc6s2.jpg "Shadow of the Colossus")       ![DragonBall Z Budokai Tenkaichi 3](https://pcsx2.net/images/stories/gitsnaps/DBZ-BT-3s.jpg "DragonBall Z Budokai Tenkaichi 3")     ![Kingdom Hearts 2: Final Mix](https://pcsx2.net/images/stories/gitsnaps/kh2_fm_n1s2.jpg "Kingdom Hearts 2: Final Mix")     ![God of War 2](https://pcsx2.net/images/stories/gitsnaps/gow2_s2.jpg "God of War 2")       ![Metal Gear Solid 3: Snake Eater](https://pcsx2.net/images/stories/gitsnaps/mgs3-1_s2.jpg "Metal Gear Solid 3: Snake Eater")       ![Rogue Galaxy](https://pcsx2.net/images/stories/gitsnaps/rogue_galaxy_n1s2.jpg "Rogue Galaxy")
+GitHub name | Email address
+--- | ---
+blueclouds8666 | blueclouds8666@mail.com 
 
-Want more? [Check out the PCSX2 website](https://pcsx2.net/demo-videos-screenshots/screenshots.html).
+PCSX2 XP has been brought to you by the NEONFLOPPY Team. Check our website at [neonfloppy.sytes.net](http://neonfloppy.sytes.net)
+
+<br />
+ 
