@@ -230,7 +230,6 @@ void CheckOutputModule(HWND window)
 
     const bool AudioExpansion =
         mods[OutputModule] == XAudio2Out ||
-        mods[OutputModule] == XAudio2_27_Out ||
         mods[OutputModule] == PortaudioOut;
 
     EnableWindow(GetDlgItem(window, IDC_OUTCONF), IsConfigurable);
