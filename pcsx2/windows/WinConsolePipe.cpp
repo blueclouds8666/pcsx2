@@ -140,7 +140,7 @@ public:
 	WinPipeRedirection( FILE* stdstream );
 	virtual ~WinPipeRedirection();
 
-	void Cleanup() noexcept;
+	void Cleanup() throw();
 };
 
 WinPipeRedirection::WinPipeRedirection( FILE* stdstream )
@@ -200,7 +200,7 @@ WinPipeRedirection::~WinPipeRedirection()
 	Cleanup();
 }
 
-void WinPipeRedirection::Cleanup() noexcept
+void WinPipeRedirection::Cleanup() throw()
 {
 	// Cleanup Order Notes:
 	//  * The redirection thread is most likely blocking on ReadFile(), so we can't Cancel yet, lest we deadlock --

@@ -95,7 +95,7 @@ struct ApplyStateStruct
 	void StartWizard();
 	bool ApplyAll();
 	bool ApplyPage( int pageid );
-	void DoCleanup() noexcept;
+	void DoCleanup() throw();
 };
 
 class IApplyState

@@ -505,7 +505,7 @@ BaseException* SysCpuProviderPack::GetException_SuperVU1() const { return CpuPro
 #endif
 
 
-void SysCpuProviderPack::CleanupMess() noexcept
+void SysCpuProviderPack::CleanupMess() throw()
 {
 	try
 	{

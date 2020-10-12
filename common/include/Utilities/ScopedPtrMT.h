@@ -49,7 +49,7 @@ public:
         return *this;
     }
 
-    ScopedPtrMT &Delete() noexcept
+    ScopedPtrMT &Delete() throw()
     {
         ScopedLock lock(m_mtx);
         _Delete_unlocked();
@@ -87,19 +87,19 @@ public:
     // the wx/boost approach (which uses some bizarre member method pointer crap, and can't
     // allow the T* implicit casting.
 
-    bool operator!() const noexcept
+    bool operator!() const throw()
     {
         return m_ptr.load() == nullptr;
     }
 
     // Equality
-    bool operator==(T *pT) const noexcept
+    bool operator==(T *pT) const throw()
     {
         return m_ptr == pT;
     }
 
     // Inequality
-    bool operator!=(T *pT) const noexcept
+    bool operator!=(T *pT) const throw()
     {
         return !operator==(pT);
     }
@@ -133,7 +133,7 @@ public:
 #endif
 
 protected:
-    void _Delete_unlocked() noexcept
+    void _Delete_unlocked() throw()
     {
         delete m_ptr.exchange(nullptr);
     }
