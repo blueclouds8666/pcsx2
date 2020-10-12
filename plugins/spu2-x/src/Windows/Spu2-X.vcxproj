@@ -60,6 +60,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
+<IncludePath >$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
+<LibraryPath >$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
+</PropertyGroup>
+  <PropertyGroup>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup>

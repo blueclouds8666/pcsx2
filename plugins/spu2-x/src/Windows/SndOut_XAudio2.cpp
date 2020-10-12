@@ -23,6 +23,24 @@
 #include <xaudio2.h>
 #include <atlcomcli.h>
 
+#ifndef jASSUME
+#	ifdef NDEBUG
+#		define jBREAKPOINT() ((void) 0)
+#		ifdef _MSC_VER
+#			define jASSUME(exp) (__assume(exp))
+#		else
+#			define jASSUME(exp) do { if(!(exp)) __builtin_unreachable(); } while(0)
+#		endif
+#	else
+#		define jBREAKPOINT() __debugbreak();
+#		ifdef wxASSERT
+#			define jASSUME(exp) wxASSERT(exp)
+#		else
+#			define jASSUME(exp) do { if(!(exp)) jBREAKPOINT(); } while(0)
+#		endif
+#	endif
+#endif
+
 namespace Exception
 {
 class XAudio2Error : public std::runtime_error

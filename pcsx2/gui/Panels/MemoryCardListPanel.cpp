@@ -486,8 +486,8 @@ void Panels::MemoryCardListPanel_Simple::UpdateUI()
 	pxSetToolTip( m_button_Duplicate, dupTip );
 
 	m_button_Convert->Enable( card.IsPresent && card.IsFormatted && !card.IsPSX );
-	pxSetToolTip(m_button_Convert, _("Convert this memory card to or from a folder memory card. Creates a duplicate of the current memory card in the new type.\n\n"
-		"Note: Only available when a memory card is formatted. Not available for PSX memory cards."));
+	pxSetToolTip(m_button_Convert, _("Convert this memory card to or from a folder memory card. Creates a duplicate of the current memory card in the new type.\n\n Note: Only available when a memory card is formatted. Not available for PSX memory cards."));
+
 
 	//m_button_Create->Enable( card.Slot>=0 || card.IsPresent);
 	m_button_Create->SetLabel( card.IsPresent ? _("Delete") : _("Create ...") );

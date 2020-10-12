@@ -25,6 +25,7 @@
 #pragma warning(default:4200)
 #include <stddef.h>
 #include <intrin.h>
+#include <array>
 
 IOCtlSrc::IOCtlSrc(decltype(m_filename) filename)
     : m_filename(filename)

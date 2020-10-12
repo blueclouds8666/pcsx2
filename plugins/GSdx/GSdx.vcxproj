@@ -79,13 +79,17 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+<IncludePath>$(SolutionDir)\3rdparty\baseclasses;$(SolutionDir)\common\include;$(VC_IncludePath);$(WindowsSdk_71A_IncludePath);$(SolutionDir)\3rdparty\freetype\include\;$(SolutionDir)\3rdparty\xz\xz\src\liblzma\api</IncludePath>
+</PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>.\GSdx.def</ModuleDefinitionFile>
-      <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(SvnRootDir)\deps\$(Platform)\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+	  <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>
       <TargetMachine Condition="'$(Platform)'=='x64'">MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>

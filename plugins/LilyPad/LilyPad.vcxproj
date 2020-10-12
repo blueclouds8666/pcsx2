@@ -42,6 +42,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  <LibraryPath Condition="'$(Platform)'=='Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
+<LibraryPath Condition="'$(Platform)'=='x64'">$(DXSDK_DIR)Lib\x64;$(LibraryPath)</LibraryPath>
+<IncludePath>$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -50,7 +53,7 @@
       <DisableSpecificWarnings>4995;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Setupapi.lib;Winmm.lib;Comdlg32.lib;dinput8.lib;dxguid.lib;comctl32.lib;hid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+	  <AdditionalDependencies>Setupapi.lib;Winmm.lib;Comdlg32.lib;dinput8.lib;dxguid.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>.\LilyPad.def</ModuleDefinitionFile>
       <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>
       <TargetMachine Condition="'$(Platform)'=='x64'">MachineX64</TargetMachine>
