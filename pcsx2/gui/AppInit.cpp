@@ -95,7 +95,7 @@ void Pcsx2App::OpenProgramLog()
 	wxWindow* m_current_focus = wxGetActiveWindow();
 
 	ScopedLock lock( m_mtx_ProgramLog );
-	m_ptr_ProgramLog	= new ConsoleLogFrame( GetMainFramePtr(), L"PCSX2 Program Log", g_Conf->ProgLogBox );
+	m_ptr_ProgramLog	= new ConsoleLogFrame( GetMainFramePtr(), L"PCSX2 XP Program Log", g_Conf->ProgLogBox );
 	m_id_ProgramLogBox	= m_ptr_ProgramLog->GetId();
 	EnableAllLogging();
 

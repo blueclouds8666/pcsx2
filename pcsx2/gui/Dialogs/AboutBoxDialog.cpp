@@ -32,7 +32,7 @@ using namespace pxSizerFlags;
 // --------------------------------------------------------------------------------------
 
 Dialogs::AboutBoxDialog::AboutBoxDialog(wxWindow* parent)
-	: wxDialogWithHelpers(parent, AddAppName(_("About %s")), pxDialogFlags())
+	: wxDialogWithHelpers(parent, AddAppName(_("About %s XP")), pxDialogFlags())
 	, m_bitmap_logo(this, wxID_ANY, wxBitmap(EmbeddedImage<res_Logo>().Get()),
 		wxDefaultPosition, wxDefaultSize
 		)
@@ -95,6 +95,12 @@ Dialogs::AboutBoxDialog::AboutBoxDialog(wxWindow* parent)
 
 	*this += new wxHyperlinkCtrl(this, wxID_ANY,
 		_("PCSX2 Official Git Repository at GitHub"), L"https://github.com/PCSX2/pcsx2"
+		) | pxProportion(1).Center().Border(wxALL, 3);
+
+	*this += Text(_("PCSX2 XP has been adapted and modified by the NEONFLOPPY Team"));
+
+	*this += new wxHyperlinkCtrl(this, wxID_ANY,
+		_("NEONFLOPPY official website"), L"http://neonfloppy.sytes.net"
 		) | pxProportion(1).Center().Border(wxALL, 3);
 
 	*this += boxesContainer | StdCenter();

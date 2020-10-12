@@ -192,7 +192,7 @@ void SysLogMachineCaps()
 {
 	if ( !PCSX2_isReleaseVersion )
 	{
-		Console.WriteLn(Color_StrongGreen, "PCSX2 %u.%u.%u-%lld %s"
+		Console.WriteLn(Color_StrongGreen, "PCSX2 XP %u.%u.%u-%lld %s"
 #ifndef DISABLE_BUILD_DATE
 			"- compiled on " __DATE__
 #endif

@@ -364,7 +364,7 @@ MainEmuFrame::MainEmuFrame(wxWindow* parent, const wxString& title)
 		if (strlen(GIT_REV) > 5) {
 			wintitle.Printf( L"%s %s", pxGetAppName().c_str(), GIT_REV);
 		} else {
-			wintitle.Printf( L"%s  %d.%d.%d-%lld%s (git)", pxGetAppName().c_str(), PCSX2_VersionHi, PCSX2_VersionMid,
+			wintitle.Printf( L"%s XP  %d.%d.%d-%lld%s (git)", pxGetAppName().c_str(), PCSX2_VersionHi, PCSX2_VersionMid,
 					PCSX2_VersionLo, SVN_REV, SVN_MODS ? L"m" : wxEmptyString );
 		}
 	}
