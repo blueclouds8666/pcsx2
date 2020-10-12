@@ -21,13 +21,9 @@
 
 #pragma once
 
-<<<<<<< HEAD:plugins/GSdx/Renderers/DX11/GSDevice11.h
-=======
-#include "GSDeviceDX.h"
->>>>>>> parent of 2e1db411f... GSdx: Folder Reorganization. (#2657):plugins/GSdx/GSDevice11.h
 #include "GSTexture11.h"
 #include "GSVector.h"
-#include "Renderers/Common/GSDevice.h"
+#include "GSDevice.h"
 
 struct GSVertexShader11
 {
@@ -214,7 +210,6 @@ public:
 				uint32 read_ba:1;
 				uint32 fbmask:1;
 
-				// *** Word 2
 				// Blend and Colclip
 				uint32 blend_a:2;
 				uint32 blend_b:2;
@@ -318,14 +313,6 @@ public:
 		OMBlendSelector() : key(0) {}
 	};
 
-	struct D3D11Blend
-	{
-		int bogus;
-		D3D11_BLEND_OP op;
-		D3D11_BLEND src, dst;
-	};
-	static const D3D11Blend m_blendMapD3D11[3*3*3*3];
-
 	#pragma pack(pop)
 
 	class ShaderMacro
@@ -354,9 +341,7 @@ public:
 private:
 	float m_hack_topleft_offset;
 	int m_upscale_multiplier;
-	int m_aniso_filter;
 	int m_mipmap;
-	int m_d3d_texsize;
 
 	GSTexture* CreateSurface(int type, int w, int h, int format);
 	GSTexture* FetchSurface(int type, int w, int h, int format);
@@ -372,7 +357,6 @@ private:
 	void BeforeDraw();
 	void AfterDraw();
 	
-	//
 
 	CComPtr<ID3D11Device> m_dev;
 	CComPtr<ID3D11DeviceContext> m_ctx;
@@ -467,22 +451,17 @@ private:
 
 	// Shaders...
 
-	hash_map<uint32, GSVertexShader11 > m_vs;
+	std::unordered_map<uint32, GSVertexShader11> m_vs;
 	CComPtr<ID3D11Buffer> m_vs_cb;
-	hash_map<uint32, CComPtr<ID3D11GeometryShader> > m_gs;
+	std::unordered_map<uint32, CComPtr<ID3D11GeometryShader>> m_gs;
 	CComPtr<ID3D11Buffer> m_gs_cb;
-	hash_map<uint64, CComPtr<ID3D11PixelShader> > m_ps;
+	std::unordered_map<uint64, CComPtr<ID3D11PixelShader>> m_ps;
 	CComPtr<ID3D11Buffer> m_ps_cb;
-	hash_map<uint32, CComPtr<ID3D11SamplerState> > m_ps_ss;
+	std::unordered_map<uint32, CComPtr<ID3D11SamplerState>> m_ps_ss;
 	CComPtr<ID3D11SamplerState> m_palette_ss;
-<<<<<<< HEAD
+	CComPtr<ID3D11SamplerState> m_rt_ss;
 	std::unordered_map<uint32, CComPtr<ID3D11DepthStencilState>> m_om_dss;
 	std::unordered_map<uint32, CComPtr<ID3D11BlendState>> m_om_bs;
-=======
-	CComPtr<ID3D11SamplerState> m_rt_ss;
-	hash_map<uint32, CComPtr<ID3D11DepthStencilState> > m_om_dss;
-	hash_map<uint32, CComPtr<ID3D11BlendState> > m_om_bs;
->>>>>>> parent of 2aeb406e3... gsdx: Remove hash_{map,set} macros
 
 	VSConstantBuffer m_vs_cb_cache;
 	GSConstantBuffer m_gs_cb_cache;
@@ -494,7 +473,6 @@ protected:
 	struct {D3D_FEATURE_LEVEL level; std::string model, vs, gs, ps, cs;} m_shader;
 
 	static HMODULE s_d3d_compiler_dll;
-	static decltype(&D3DCompile) s_pD3DCompile;
 	// Older version doesn't support D3D_COMPILE_STANDARD_FILE_INCLUDE, which
 	// could be useful for external shaders.
 	static bool s_old_d3d_compiler_dll;

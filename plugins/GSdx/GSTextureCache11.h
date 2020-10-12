@@ -21,11 +21,7 @@
 
 #pragma once
 
-<<<<<<< HEAD:plugins/GSdx/Renderers/DX11/GSTextureCache11.h
-#include "Renderers/HW/GSTextureCache.h"
-=======
 #include "GSTextureCache.h"
->>>>>>> parent of 2e1db411f... GSdx: Folder Reorganization. (#2657):plugins/GSdx/GSTextureCache11.h
 #include "GSDevice11.h"
 
 class GSTextureCache11 : public GSTextureCache

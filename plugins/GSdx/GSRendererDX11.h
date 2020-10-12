@@ -21,34 +21,22 @@
 
 #pragma once
 
-<<<<<<< HEAD:plugins/GSdx/Renderers/DX11/GSRendererDX11.h
-#include "Renderers/HW/GSRendererHW.h"
-=======
+
 #include "GSRendererDX.h"
 #include "GSVertexHW.h"
->>>>>>> parent of 2e1db411f... GSdx: Folder Reorganization. (#2657):plugins/GSdx/GSRendererDX11.h
 #include "GSTextureCache11.h"
-#include "Renderers/HW/GSVertexHW.h"
 
 class GSRendererDX11 final : public GSRendererHW
 {
-	enum ACC_BLEND_D3D11 {
-		ACC_BLEND_NONE_D3D11   = 0,
-		ACC_BLEND_BASIC_D3D11  = 1,
-		ACC_BLEND_MEDIUM_D3D11 = 2,
-		ACC_BLEND_HIGH_D3D11   = 3
-	};
-
 private:
+	bool UserHacks_AlphaHack;
 	bool UserHacks_AlphaStencil;
-	bool m_bind_rtsample;
 
 private:
 	inline void ResetStates();
 	inline void SetupIA(const float& sx, const float& sy);
 	inline void EmulateAtst(const int pass, const GSTextureCache::Source* tex);
 	inline void EmulateZbuffer();
-	inline void EmulateBlending();
 	inline void EmulateTextureShuffleAndFbmask();
 	inline void EmulateChannelShuffle(GSTexture** rt, const GSTextureCache::Source* tex);
 	inline void EmulateTextureSampler(const GSTextureCache::Source* tex);
