@@ -17,12 +17,11 @@
 
 #include "Global.h"
 
+#define _WIN32_DCOM
 #include "Dialogs.h"
-#include <atlcomcli.h>
 
-#undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0602
 #include <xaudio2.h>
+#include <atlcomcli.h>
 
 namespace Exception
 {
@@ -63,369 +62,381 @@ public:
 };
 }
 
-static const double SndOutNormalizer = (double)(1UL << (SndOutVolumeShift + 16));
+static const double SndOutNormalizer = (double)(1UL<<(SndOutVolumeShift+16));
 
-class XAudio2Mod : public SndOutModule
+class XAudio2Mod: public SndOutModule
 {
 private:
-    static const int PacketsPerBuffer = 8;
-    static const int MAX_BUFFER_COUNT = 3;
+	static const int PacketsPerBuffer = 8;
+	static const int MAX_BUFFER_COUNT = 3;
 
-    class BaseStreamingVoice : public IXAudio2VoiceCallback
-    {
-    protected:
-        IXAudio2SourceVoice *pSourceVoice;
-        s16 *qbuffer;
+	class BaseStreamingVoice : public IXAudio2VoiceCallback
+	{
+	protected:
+		IXAudio2SourceVoice* pSourceVoice;
+		s16* qbuffer;
 
-        const uint m_nBuffers;
-        const uint m_nChannels;
-        const uint m_BufferSize;
-        const uint m_BufferSizeBytes;
+		const uint m_nBuffers;
+		const uint m_nChannels;
+		const uint m_BufferSize;
+		const uint m_BufferSizeBytes;
 
-        CRITICAL_SECTION cs;
+		CRITICAL_SECTION cs;
 
-    public:
-        int GetEmptySampleCount()
-        {
-            XAUDIO2_VOICE_STATE state;
-            pSourceVoice->GetState(&state);
-            return state.SamplesPlayed & (m_BufferSize - 1);
-        }
+	public:
+		int GetEmptySampleCount()
+		{
+			XAUDIO2_VOICE_STATE state;
+			pSourceVoice->GetState( &state );
+			return state.SamplesPlayed & (m_BufferSize-1);
+		}
 
-        virtual ~BaseStreamingVoice()
-        {
-        }
+		virtual ~BaseStreamingVoice()
+		{
+		}
 
-        BaseStreamingVoice(uint numChannels)
-            : m_nBuffers(Config_XAudio2.NumBuffers)
-            , m_nChannels(numChannels)
-            , m_BufferSize(SndOutPacketSize * m_nChannels * PacketsPerBuffer)
-            , m_BufferSizeBytes(m_BufferSize * sizeof(s16))
-        {
-        }
+		BaseStreamingVoice( uint numChannels ) :
+			m_nBuffers( Config_XAudio2.NumBuffers ),
+			m_nChannels( numChannels ),
+			m_BufferSize( SndOutPacketSize * m_nChannels * PacketsPerBuffer ),
+			m_BufferSizeBytes( m_BufferSize * sizeof(s16) )
+		{
+		}
 
-        virtual void Init(IXAudio2 *pXAudio2) = 0;
+		virtual void Init( IXAudio2* pXAudio2 ) = 0;
 
-    protected:
-        // Several things must be initialized separate of the constructor, due to the fact that
-        // virtual calls can't be made from the constructor's context.
-        void _init(IXAudio2 *pXAudio2, uint chanConfig)
-        {
-            WAVEFORMATEXTENSIBLE wfx;
+	protected:
+		// Several things must be initialized separate of the constructor, due to the fact that
+		// virtual calls can't be made from the constructor's context.
+		void _init( IXAudio2* pXAudio2, uint chanConfig )
+		{
+			WAVEFORMATEXTENSIBLE wfx;
 
-            memset(&wfx, 0, sizeof(WAVEFORMATEXTENSIBLE));
-            wfx.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
-            wfx.Format.nSamplesPerSec = SampleRate;
-            wfx.Format.nChannels = m_nChannels;
-            wfx.Format.wBitsPerSample = 16;
-            wfx.Format.nBlockAlign = wfx.Format.nChannels * wfx.Format.wBitsPerSample / 8;
-            wfx.Format.nAvgBytesPerSec = SampleRate * wfx.Format.nBlockAlign;
-            wfx.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
-            wfx.Samples.wValidBitsPerSample = 16;
-            wfx.dwChannelMask = chanConfig;
-            wfx.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
+			memset(&wfx, 0, sizeof(WAVEFORMATEXTENSIBLE));
+			wfx.Format.wFormatTag		= WAVE_FORMAT_EXTENSIBLE;
+			wfx.Format.nSamplesPerSec	= SampleRate;
+			wfx.Format.nChannels		= m_nChannels;
+			wfx.Format.wBitsPerSample	= 16;
+			wfx.Format.nBlockAlign		= wfx.Format.nChannels*wfx.Format.wBitsPerSample/8;
+			wfx.Format.nAvgBytesPerSec	= SampleRate * wfx.Format.nBlockAlign;
+			wfx.Format.cbSize			= sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
+			wfx.Samples.wValidBitsPerSample = 16;
+			wfx.dwChannelMask			= chanConfig;
+			wfx.SubFormat				= KSDATAFORMAT_SUBTYPE_PCM;
 
-            //
-            // Create an XAudio2 voice to stream this wave
-            //
-            HRESULT hr;
-            if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX *)&wfx,
-                                                        XAUDIO2_VOICE_NOSRC, 1.0f, this))) {
-                throw Exception::XAudio2Error(hr, "XAudio2 CreateSourceVoice failure.");
-            }
+			//
+			// Create an XAudio2 voice to stream this wave
+			//
+			HRESULT hr;
+			if( FAILED(hr = pXAudio2->CreateSourceVoice( &pSourceVoice, (WAVEFORMATEX*)&wfx,
+				XAUDIO2_VOICE_NOSRC, 1.0f, this ) ) )
+			{
+				throw Exception::XAudio2Error( hr, "XAudio2 CreateSourceVoice failure." );
+			}
 
-            InitializeCriticalSection(&cs);
-            EnterCriticalSection(&cs);
+			InitializeCriticalSection( &cs );
+			EnterCriticalSection( &cs );
 
-            pSourceVoice->FlushSourceBuffers();
-            pSourceVoice->Start(0, 0);
+			pSourceVoice->FlushSourceBuffers();
+			pSourceVoice->Start( 0, 0 );
 
-            qbuffer = new s16[m_nBuffers * m_BufferSize];
-            ZeroMemory(qbuffer, m_BufferSizeBytes * m_nBuffers);
+			qbuffer = new s16[m_nBuffers * m_BufferSize];
+			ZeroMemory( qbuffer, m_BufferSizeBytes * m_nBuffers );
 
-            // Start some buffers.
+			// Start some buffers.
 
-            for (uint i = 0; i < m_nBuffers; i++) {
-                XAUDIO2_BUFFER buf = {0};
-                buf.AudioBytes = m_BufferSizeBytes;
-                buf.pContext = &qbuffer[i * m_BufferSize];
-                buf.pAudioData = (BYTE *)buf.pContext;
-                pSourceVoice->SubmitSourceBuffer(&buf);
-            }
+			for( uint i=0; i<m_nBuffers; i++ )
+			{
+				XAUDIO2_BUFFER buf = {0};
+				buf.AudioBytes = m_BufferSizeBytes;
+				buf.pContext   = &qbuffer[i*m_BufferSize];
+				buf.pAudioData = (BYTE*)buf.pContext;
+				pSourceVoice->SubmitSourceBuffer( &buf );
+			}
 
-            LeaveCriticalSection(&cs);
-        }
+			LeaveCriticalSection( &cs );
+		}
 
-        STDMETHOD_(void, OnVoiceProcessingPassStart)
-        () {}
-        STDMETHOD_(void, OnVoiceProcessingPassStart)
-        (UINT32) {}
-        STDMETHOD_(void, OnVoiceProcessingPassEnd)
-        () {}
-        STDMETHOD_(void, OnStreamEnd)
-        () {}
-        STDMETHOD_(void, OnBufferStart)
-        (void *) {}
-        STDMETHOD_(void, OnLoopEnd)
-        (void *) {}
-        STDMETHOD_(void, OnVoiceError)
-        (THIS_ void *pBufferContext, HRESULT Error) {}
-    };
+		STDMETHOD_(void, OnVoiceProcessingPassStart) () {}
+		STDMETHOD_(void, OnVoiceProcessingPassStart) (UINT32) { };
+		STDMETHOD_(void, OnVoiceProcessingPassEnd) () {}
+		STDMETHOD_(void, OnStreamEnd) () {}
+		STDMETHOD_(void, OnBufferStart) ( void* ) {}
+		STDMETHOD_(void, OnLoopEnd) ( void* ) {}
+		STDMETHOD_(void, OnVoiceError) (THIS_ void* pBufferContext, HRESULT Error) { };
+	};
 
-    template <typename T>
-    class StreamingVoice : public BaseStreamingVoice
-    {
-    public:
-        StreamingVoice(IXAudio2 *pXAudio2)
-            : BaseStreamingVoice(sizeof(T) / sizeof(s16))
-        {
-        }
+	template< typename T >
+	class StreamingVoice : public BaseStreamingVoice
+	{
+	public:
+		StreamingVoice( IXAudio2* pXAudio2 ) :
+			BaseStreamingVoice( sizeof(T) / sizeof( s16 ) )
+		{
+		}
 
-        virtual ~StreamingVoice()
-        {
-            IXAudio2SourceVoice *killMe = pSourceVoice;
-            pSourceVoice = NULL;
-            killMe->FlushSourceBuffers();
-            killMe->DestroyVoice();
+		virtual ~StreamingVoice()
+		{
+			IXAudio2SourceVoice* killMe = pSourceVoice;
+			pSourceVoice = NULL;
+			killMe->FlushSourceBuffers();
+			killMe->DestroyVoice();
 
-            EnterCriticalSection(&cs);
-            safe_delete_array(qbuffer);
-            LeaveCriticalSection(&cs);
-            DeleteCriticalSection(&cs);
-        }
+			EnterCriticalSection( &cs );
+			safe_delete_array( qbuffer );
+			LeaveCriticalSection( &cs );
+			DeleteCriticalSection( &cs );
+		}
 
-        void Init(IXAudio2 *pXAudio2)
-        {
-            int chanMask = 0;
-            switch (m_nChannels) {
-                case 1:
-                    chanMask |= SPEAKER_FRONT_CENTER;
-                    break;
-                case 2:
-                    chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-                    break;
-                case 3:
-                    chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_LOW_FREQUENCY;
-                    break;
-                case 4:
-                    chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
-                    break;
-                case 5:
-                    chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
-                    break;
-                case 6:
-                    chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_LOW_FREQUENCY;
-                    break;
-                case 8:
-                    chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT | SPEAKER_LOW_FREQUENCY;
-                    break;
-            }
-            _init(pXAudio2, chanMask);
-        }
+		void Init( IXAudio2* pXAudio2 )
+		{
+			int chanMask = 0;
+			switch(m_nChannels)
+			{
+				case 1: chanMask |= SPEAKER_FRONT_CENTER; break;
+				case 2: chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT; break;
+				case 3: chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_LOW_FREQUENCY; break;
+				case 4: chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT; break;
+				case 5: chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT; break;
+				case 6: chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_LOW_FREQUENCY; break;
+				case 8: chanMask |= SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT | SPEAKER_LOW_FREQUENCY; break;
+			}
+			_init( pXAudio2, chanMask );
+		}
 
-    protected:
-        STDMETHOD_(void, OnBufferEnd)
-        (void *context)
-        {
-            EnterCriticalSection(&cs);
+	protected:
+		STDMETHOD_(void, OnBufferEnd) ( void* context )
+		{
+			EnterCriticalSection( &cs );
 
-            // All of these checks are necessary because XAudio2 is wonky shizat.
-            if (pSourceVoice == NULL || context == NULL) {
-                LeaveCriticalSection(&cs);
-                return;
-            }
+			// All of these checks are necessary because XAudio2 is wonky shizat.
+			if( pSourceVoice == NULL || context == NULL )
+			{
+				LeaveCriticalSection( &cs );
+				return;
+			}
 
-            T *qb = (T *)context;
+			T* qb = (T*)context;
 
-            for (int p = 0; p < PacketsPerBuffer; p++, qb += SndOutPacketSize)
-                SndBuffer::ReadSamples(qb);
+			for(int p=0; p<PacketsPerBuffer; p++, qb+=SndOutPacketSize )
+				SndBuffer::ReadSamples( qb );
 
-            XAUDIO2_BUFFER buf = {0};
-            buf.AudioBytes = m_BufferSizeBytes;
-            buf.pAudioData = (BYTE *)context;
-            buf.pContext = context;
+			XAUDIO2_BUFFER buf = {0};
+			buf.AudioBytes	= m_BufferSizeBytes;
+			buf.pAudioData	= (BYTE*)context;
+			buf.pContext	= context;
 
-            pSourceVoice->SubmitSourceBuffer(&buf);
-            LeaveCriticalSection(&cs);
-        }
-    };
+			pSourceVoice->SubmitSourceBuffer( &buf );
+			LeaveCriticalSection( &cs );
+		}
 
-    HMODULE xAudio2DLL;
-    decltype(&XAudio2Create) pXAudio2Create;
-    CComPtr<IXAudio2> pXAudio2;
-    IXAudio2MasteringVoice *pMasteringVoice;
-    BaseStreamingVoice *voiceContext;
+	};
+#if _WIN32_WINNT < 0x602
+	HMODULE xAudio2DLL;
+#endif
+	CComPtr<IXAudio2> pXAudio2;
+	IXAudio2MasteringVoice* pMasteringVoice;
+	BaseStreamingVoice* voiceContext;
 
 public:
-    s32 Init()
-    {
-        HRESULT hr;
 
-        pxAssume(pXAudio2 == NULL);
+	s32 Init()
+	{
+		HRESULT hr;
 
-        xAudio2DLL = LoadLibraryEx(XAUDIO2_DLL, nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-        if (xAudio2DLL == nullptr)
-            throw std::runtime_error("Could not load " XAUDIO2_DLL_A ". Error code:" + std::to_string(GetLastError()));
+		jASSUME( pXAudio2 == NULL );
+#if _WIN32_WINNT < 0x602
+		// On some systems XAudio2.7 can unload itself and cause PCSX2 to crash.
+		// Maintain an extra library reference so it can't do so. Does not
+		// affect XAudio 2.8+, but that's Win8+. See
+		// http://blogs.msdn.com/b/chuckw/archive/2015/10/09/known-issues-xaudio-2-7.aspx
+#ifdef _DEBUG
+		xAudio2DLL = LoadLibrary(L"XAudioD2_7.dll");
+#else
+		xAudio2DLL = LoadLibrary(L"XAudio2_7.dll");
+#endif
+#endif
 
-        pXAudio2Create = reinterpret_cast<decltype(&XAudio2Create)>(GetProcAddress(xAudio2DLL, "XAudio2Create"));
-        if (pXAudio2Create == nullptr)
-            throw std::runtime_error("XAudio2Create not found. Error code: " + std::to_string(GetLastError()));
+		//
+		// Initialize XAudio2
+		//
+		CoInitializeEx( NULL, COINIT_MULTITHREADED );
 
-        //
-        // Initialize XAudio2
-        //
-        CoInitializeEx(NULL, COINIT_MULTITHREADED);
+		UINT32 flags = 0;
+#if _WIN32_WINNT < 0x602
+		if( IsDebugBuild )
+			flags |= XAUDIO2_DEBUG_ENGINE;
+#endif
 
-        try {
-            if (FAILED(hr = pXAudio2Create(&pXAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR)))
-                throw Exception::XAudio2Error(hr, "Failed to init XAudio2 engine. Error Details:");
+		try
+		{
+			if ( FAILED(hr = XAudio2Create( &pXAudio2, flags ) ) )
+				throw Exception::XAudio2Error( hr,
+					"Failed to init XAudio2 engine.  XA2 may not be available on your system.\n"
+					"Ensure that you have the latest DirectX runtimes installed, or use \n"
+					"DirectX / WaveOut drivers instead.  Error Details:"
+				);
+#if _WIN32_WINNT < 0x602
+			XAUDIO2_DEVICE_DETAILS deviceDetails;
+			pXAudio2->GetDeviceDetails( 0, &deviceDetails );
+#endif
 
-            // Stereo Expansion was planned to grab the currently configured number of
-            // Speakers from Windows's audio config.
-            // This doesn't always work though, so let it be a user configurable option.
+			// Stereo Expansion was planned to grab the currently configured number of
+			// Speakers from Windows's audio config.
+			// This doesn't always work though, so let it be a user configurable option.
 
-            int speakers;
-            switch (numSpeakers) // speakers = (numSpeakers + 1) *2; ?
-            {
-                case 0:
-                    speakers = 2;
-                    break; // Stereo
-                case 1:
-                    speakers = 4;
-                    break; // Quadrafonic
-                case 2:
-                    speakers = 6;
-                    break; // Surround 5.1
-                case 3:
-                    speakers = 8;
-                    break; // Surround 7.1
-                default:
-                    speakers = 2;
-            }
+			int speakers;		
+			switch(numSpeakers) // speakers = (numSpeakers + 1) *2; ?
+			{
+				case 0: speakers = 2; break; // Stereo
+				case 1: speakers = 4; break; // Quadrafonic
+				case 2: speakers = 6; break; // Surround 5.1
+				case 3: speakers = 8; break; // Surround 7.1
+				default: speakers = 2;
+			}
 
-            //
-            // Create a mastering voice
-            //
-            if (FAILED(hr = pXAudio2->CreateMasteringVoice(&pMasteringVoice, speakers, SampleRate))) {
-                SysMessage("Failed creating mastering voice: %#X\n", hr);
-                CoUninitialize();
-                return -1;
-            }
+#if _WIN32_WINNT < 0x602
+			// Any windows driver should support stereo at the software level, I should think!
+			jASSUME( deviceDetails.OutputFormat.Format.nChannels > 1 );
+#endif
 
-            switch (speakers) {
-                case 2:
-                    ConLog("* SPU2 > Using normal 2 speaker stereo output.\n");
-                    voiceContext = new StreamingVoice<StereoOut16>(pXAudio2);
-                    break;
+			//
+			// Create a mastering voice
+			//
+			if ( FAILED(hr = pXAudio2->CreateMasteringVoice( &pMasteringVoice, speakers, SampleRate ) ) )
+			{
+				SysMessage( "Failed creating mastering voice: %#X\n", hr );
+				CoUninitialize();
+				return -1;
+			}
 
-                case 3:
-                    ConLog("* SPU2 > 2.1 speaker expansion enabled.\n");
-                    voiceContext = new StreamingVoice<Stereo21Out16>(pXAudio2);
-                    break;
+			switch( speakers )
+			{
+				case 2:
+					ConLog( "* SPU2 > Using normal 2 speaker stereo output.\n" );
+					voiceContext = new StreamingVoice<StereoOut16>( pXAudio2 );
+				break;
 
-                case 4:
-                    ConLog("* SPU2 > 4 speaker expansion enabled [quadraphenia]\n");
-                    voiceContext = new StreamingVoice<Stereo40Out16>(pXAudio2);
-                    break;
+				case 3:
+					ConLog( "* SPU2 > 2.1 speaker expansion enabled.\n" );
+					voiceContext = new StreamingVoice<Stereo21Out16>( pXAudio2 );
+				break;
 
-                case 5:
-                    ConLog("* SPU2 > 4.1 speaker expansion enabled.\n");
-                    voiceContext = new StreamingVoice<Stereo41Out16>(pXAudio2);
-                    break;
+				case 4:
+					ConLog( "* SPU2 > 4 speaker expansion enabled [quadraphenia]\n" );
+					voiceContext = new StreamingVoice<Stereo40Out16>( pXAudio2 );
+				break;
 
-                case 6:
-                case 7:
-                    switch (dplLevel) {
-                        case 0:
-                            ConLog("* SPU2 > 5.1 speaker expansion enabled.\n");
-                            voiceContext = new StreamingVoice<Stereo51Out16>(pXAudio2); //"normal" stereo upmix
-                            break;
-                        case 1:
-                            ConLog("* SPU2 > 5.1 speaker expansion with basic ProLogic dematrixing enabled.\n");
-                            voiceContext = new StreamingVoice<Stereo51Out16Dpl>(pXAudio2); // basic Dpl decoder without rear stereo balancing
-                            break;
-                        case 2:
-                            ConLog("* SPU2 > 5.1 speaker expansion with experimental ProLogicII dematrixing enabled.\n");
-                            voiceContext = new StreamingVoice<Stereo51Out16DplII>(pXAudio2); //gigas PLII
-                            break;
-                    }
-                    break;
+				case 5:
+					ConLog( "* SPU2 > 4.1 speaker expansion enabled.\n" );
+					voiceContext = new StreamingVoice<Stereo41Out16>( pXAudio2 );
+				break;
 
-                default: // anything 8 or more gets the 7.1 treatment!
-                    ConLog("* SPU2 > 7.1 speaker expansion enabled.\n");
-                    voiceContext = new StreamingVoice<Stereo51Out16>(pXAudio2);
-                    break;
-            }
+				case 6:
+				case 7:
+					switch(dplLevel)
+					{
+					case 0:
+						ConLog( "* SPU2 > 5.1 speaker expansion enabled.\n" );
+						voiceContext = new StreamingVoice<Stereo51Out16>( pXAudio2 );   //"normal" stereo upmix
+						break;
+					case 1:
+						ConLog( "* SPU2 > 5.1 speaker expansion with basic ProLogic dematrixing enabled.\n" );
+						voiceContext = new StreamingVoice<Stereo51Out16Dpl>( pXAudio2 ); // basic Dpl decoder without rear stereo balancing
+						break;
+					case 2:
+						ConLog( "* SPU2 > 5.1 speaker expansion with experimental ProLogicII dematrixing enabled.\n" );
+						voiceContext = new StreamingVoice<Stereo51Out16DplII>( pXAudio2 ); //gigas PLII
+						break;
+					}
+				break;
 
-            voiceContext->Init(pXAudio2);
-        } catch (Exception::XAudio2Error &ex) {
-            SysMessage(ex.CMessage());
-            pXAudio2.Release();
-            CoUninitialize();
-            return -1;
-        }
+				default:	// anything 8 or more gets the 7.1 treatment!
+					ConLog( "* SPU2 > 7.1 speaker expansion enabled.\n" );
+					voiceContext = new StreamingVoice<Stereo51Out16>( pXAudio2 );
+				break;
+			}
 
-        return 0;
-    }
+			voiceContext->Init( pXAudio2 );
+		}
+		catch( Exception::XAudio2Error& ex )
+		{
+			SysMessage( ex.CMessage() );
+			pXAudio2.Release();
+			CoUninitialize();
+			return -1;
+		}
 
-    void Close()
-    {
-        safe_delete(voiceContext);
+		return 0;
+	}
 
-        voiceContext = NULL;
+	void Close()
+	{
+		// Clean up?
+		// All XAudio2 interfaces are released when the engine is destroyed,
+		// but being tidy never hurt.
 
-        if (pMasteringVoice != NULL)
-            pMasteringVoice->DestroyVoice();
+		// Actually it can hurt.  As of DXSDK Aug 2008, doing a full cleanup causes
+		// XA2 on Vista to crash.  Even if you copy/paste code directly from Microsoft.
+		// But doing no cleanup at all causes XA2 under XP to crash.  So after much trial
+		// and error we found a happy compromise as follows:
 
-        pMasteringVoice = NULL;
+		safe_delete( voiceContext );
 
-        pXAudio2.Release();
-        CoUninitialize();
+		voiceContext = NULL;
 
-        if (xAudio2DLL) {
-            FreeLibrary(xAudio2DLL);
-            xAudio2DLL = nullptr;
-            pXAudio2Create = nullptr;
-        }
-    }
+		if( pMasteringVoice != NULL )
+			pMasteringVoice->DestroyVoice();
 
-    virtual void Configure(uptr parent)
-    {
-    }
+		pMasteringVoice = NULL;
 
-    s32 Test() const
-    {
-        return 0;
-    }
+		pXAudio2.Release();
+		CoUninitialize();
 
-    int GetEmptySampleCount()
-    {
-        if (voiceContext == NULL)
-            return 0;
-        return voiceContext->GetEmptySampleCount();
-    }
+#if _WIN32_WINNT < 0x602
+		if (xAudio2DLL) {
+			FreeLibrary(xAudio2DLL);
+			xAudio2DLL = nullptr;
+		}
+#endif
+	}
 
-    const wchar_t *GetIdent() const
-    {
-        return L"xaudio2";
-    }
+	virtual void Configure(uptr parent)
+	{
+	}
+	
+	s32  Test() const
+	{
+		return 0;
+	}
 
-    const wchar_t *GetLongName() const
-    {
-        return L"XAudio 2 (Recommended)";
-    }
+	int GetEmptySampleCount()
+	{
+		if( voiceContext == NULL ) return 0;
+		return voiceContext->GetEmptySampleCount();
+	}
 
-    void ReadSettings()
-    {
-    }
+	const wchar_t* GetIdent() const
+	{
+		return L"xaudio2";
+	}
 
-    void SetApiSettings(wxString api)
-    {
-    }
+	const wchar_t* GetLongName() const
+	{
+		return L"XAudio 2 (Recommended)";
+	}
 
-    void WriteSettings() const
-    {
-    }
+	void ReadSettings()
+	{
+	}
+
+	void SetApiSettings(wxString api)
+	{
+	}
+
+	void WriteSettings() const
+	{
+	}
 
 } static XA2;
 
