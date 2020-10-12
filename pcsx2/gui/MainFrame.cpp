@@ -388,7 +388,7 @@ MainEmuFrame::MainEmuFrame(wxWindow* parent, const wxString& title)
 	if( PCSX2_isReleaseVersion )
 	{
 		// stable releases, with a simple title.
-		wintitle.Printf( L"%s  %d.%d.%d", pxGetAppName().c_str(), PCSX2_VersionHi, PCSX2_VersionMid, PCSX2_VersionLo );
+		wintitle.Printf( L"%s XP  %d.%d.%d", pxGetAppName().c_str(), PCSX2_VersionHi, PCSX2_VersionMid, PCSX2_VersionLo );
 	}
 	else
 	{

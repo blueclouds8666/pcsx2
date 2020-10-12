@@ -33,7 +33,7 @@ using namespace pxSizerFlags;
 // --------------------------------------------------------------------------------------
 
 Dialogs::AboutBoxDialog::AboutBoxDialog(wxWindow* parent)
-	: wxDialogWithHelpers(parent, AddAppName(_("About %s")), pxDialogFlags())
+	: wxDialogWithHelpers(parent, AddAppName(_("About %s XP")), pxDialogFlags())
 {
 	const float scale = MSW_GetDPIScale();
 	SetMinWidth(scale * 460);
@@ -61,6 +61,12 @@ Dialogs::AboutBoxDialog::AboutBoxDialog(wxWindow* parent)
 
 	*this += Text(_("PlayStation 2 Emulator:"));
 	*this += general | StdCenter();
+
+	*this += Text(_("PCSX2 XP has been adapted and modified by the NEONFLOPPY Team"));
+
+	*this += new wxHyperlinkCtrl(this, wxID_ANY,
+		_("NEONFLOPPY official website"), L"http://neonfloppy.sytes.net") | StdCenter();
+
 	*this += Text(_("Big thanks to everyone who contributed to the project throughout the years."));
 
 	wxButton& closeButton = *new wxButton(this, wxID_OK, _("Close"));
