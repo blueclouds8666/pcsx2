@@ -224,19 +224,10 @@ s2r_replay(HWND hwnd, HINSTANCE hinst, LPSTR filename, int nCmdShow)
     Running = true;
 
 #ifdef _WIN32
-    AllocConsole();
-    SetConsoleCtrlHandler(HandlerRoutine, TRUE);
-
-    conprintf("Playing %s file on %x...", filename, hwnd);
-
-    if (IsWindows8OrGreater()) {
-        for (int n = 0; mods[n] != nullptr; ++n) {
-            if (mods[n] == XAudio2_27_Out) {
-                mods[n] = XAudio2Out;
-                break;
-            }
-        }
-    }
+	AllocConsole();
+	SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+	
+	conprintf("Playing %s file on %x...",filename,hwnd);
 
 #endif
 

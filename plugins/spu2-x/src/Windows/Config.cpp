@@ -82,85 +82,100 @@ int numSpeakers = 0;
 int dplLevel = 0;
 
 /*****************************************************************************/
+BOOL IsVistaOrGreater2() // workaround for XP toolset missing VersionHelpers.h 
+{
+	OSVERSIONINFOEX osvi;
+	DWORDLONG dwlConditionMask = 0;
+	int op = VER_GREATER_EQUAL;
+
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	osvi.dwMajorVersion = 6;
+
+	VER_SET_CONDITION(dwlConditionMask, VER_MAJORVERSION, op);
+
+	return VerifyVersionInfo(&osvi, VER_MAJORVERSION, dwlConditionMask);
+}
 
 void ReadSettings()
 {
-    Interpolation = CfgReadInt(L"MIXING", L"Interpolation", 4);
+	Interpolation = CfgReadInt( L"MIXING",L"Interpolation", 4 );
 
-    EffectsDisabled = CfgReadBool(L"MIXING", L"Disable_Effects", false);
-    postprocess_filter_dealias = CfgReadBool(L"MIXING", L"DealiasFilter", false);
-    FinalVolume = ((float)CfgReadInt(L"MIXING", L"FinalVolume", 100)) / 100;
-    if (FinalVolume > 1.0f)
-        FinalVolume = 1.0f;
+	EffectsDisabled = CfgReadBool( L"MIXING", L"Disable_Effects", false );
+	postprocess_filter_dealias = CfgReadBool( L"MIXING", L"DealiasFilter", false );
+	FinalVolume = ((float)CfgReadInt( L"MIXING", L"FinalVolume", 100 )) / 100;
+		if ( FinalVolume > 1.0f) FinalVolume = 1.0f;
 
-    AdvancedVolumeControl = CfgReadBool(L"MIXING", L"AdvancedVolumeControl", false);
-    VolumeAdjustCdb = CfgReadFloat(L"MIXING", L"VolumeAdjustC(dB)", 0);
-    VolumeAdjustFLdb = CfgReadFloat(L"MIXING", L"VolumeAdjustFL(dB)", 0);
-    VolumeAdjustFRdb = CfgReadFloat(L"MIXING", L"VolumeAdjustFR(dB)", 0);
-    VolumeAdjustBLdb = CfgReadFloat(L"MIXING", L"VolumeAdjustBL(dB)", 0);
-    VolumeAdjustBRdb = CfgReadFloat(L"MIXING", L"VolumeAdjustBR(dB)", 0);
-    VolumeAdjustSLdb = CfgReadFloat(L"MIXING", L"VolumeAdjustSL(dB)", 0);
-    VolumeAdjustSRdb = CfgReadFloat(L"MIXING", L"VolumeAdjustSR(dB)", 0);
-    VolumeAdjustLFEdb = CfgReadFloat(L"MIXING", L"VolumeAdjustLFE(dB)", 0);
-    delayCycles = CfgReadInt(L"DEBUG", L"DelayCycles", 4);
-    VolumeAdjustC = powf(10, VolumeAdjustCdb / 10);
-    VolumeAdjustFL = powf(10, VolumeAdjustFLdb / 10);
-    VolumeAdjustFR = powf(10, VolumeAdjustFRdb / 10);
-    VolumeAdjustBL = powf(10, VolumeAdjustBLdb / 10);
-    VolumeAdjustBR = powf(10, VolumeAdjustBRdb / 10);
-    VolumeAdjustSL = powf(10, VolumeAdjustSLdb / 10);
-    VolumeAdjustSR = powf(10, VolumeAdjustSRdb / 10);
-    VolumeAdjustLFE = powf(10, VolumeAdjustLFEdb / 10);
+	AdvancedVolumeControl = CfgReadBool(L"MIXING", L"AdvancedVolumeControl", false);
+	VolumeAdjustCdb = CfgReadFloat(L"MIXING", L"VolumeAdjustC(dB)", 0);
+	VolumeAdjustFLdb = CfgReadFloat(L"MIXING", L"VolumeAdjustFL(dB)", 0);
+	VolumeAdjustFRdb = CfgReadFloat(L"MIXING", L"VolumeAdjustFR(dB)", 0);
+	VolumeAdjustBLdb = CfgReadFloat(L"MIXING", L"VolumeAdjustBL(dB)", 0);
+	VolumeAdjustBRdb = CfgReadFloat(L"MIXING", L"VolumeAdjustBR(dB)", 0);
+	VolumeAdjustSLdb = CfgReadFloat(L"MIXING", L"VolumeAdjustSL(dB)", 0);
+	VolumeAdjustSRdb = CfgReadFloat(L"MIXING", L"VolumeAdjustSR(dB)", 0);
+	VolumeAdjustLFEdb = CfgReadFloat(L"MIXING", L"VolumeAdjustLFE(dB)", 0);
+	delayCycles = CfgReadInt(L"DEBUG", L"DelayCycles", 4);
+	VolumeAdjustC = powf(10, VolumeAdjustCdb / 10);
+	VolumeAdjustFL = powf(10, VolumeAdjustFLdb / 10);
+	VolumeAdjustFR = powf(10, VolumeAdjustFRdb / 10);
+	VolumeAdjustBL = powf(10, VolumeAdjustBLdb / 10);
+	VolumeAdjustBR = powf(10, VolumeAdjustBRdb / 10);
+	VolumeAdjustSL = powf(10, VolumeAdjustSLdb / 10);
+	VolumeAdjustSR = powf(10, VolumeAdjustSRdb / 10);
+	VolumeAdjustLFE = powf(10, VolumeAdjustLFEdb / 10);
 
-    SynchMode = CfgReadInt(L"OUTPUT", L"Synch_Mode", 0);
-    numSpeakers = CfgReadInt(L"OUTPUT", L"SpeakerConfiguration", 0);
-    dplLevel = CfgReadInt(L"OUTPUT", L"DplDecodingLevel", 0);
-    SndOutLatencyMS = CfgReadInt(L"OUTPUT", L"Latency", 100);
+	SynchMode = CfgReadInt( L"OUTPUT", L"Synch_Mode", 0);
+	numSpeakers = CfgReadInt( L"OUTPUT", L"SpeakerConfiguration", 0);
+	dplLevel = CfgReadInt( L"OUTPUT", L"DplDecodingLevel", 0);
+	SndOutLatencyMS = CfgReadInt(L"OUTPUT",L"Latency", 100);
 
-    if ((SynchMode == 0) && (SndOutLatencyMS < LATENCY_MIN_TS)) // can't use low-latency with timestretcher atm
-        SndOutLatencyMS = LATENCY_MIN_TS;
-    else if (SndOutLatencyMS < LATENCY_MIN)
-        SndOutLatencyMS = LATENCY_MIN;
+	if((SynchMode == 0) && (SndOutLatencyMS < LATENCY_MIN_TS)) // can't use low-latency with timestretcher atm
+		SndOutLatencyMS = LATENCY_MIN_TS;
+	else if(SndOutLatencyMS < LATENCY_MIN)
+		SndOutLatencyMS = LATENCY_MIN;
 
-    wchar_t omodid[128];
+	wchar_t omodid[128];
 
-    // portaudio occasionally has issues selecting the proper default audio device.
-    // let's use xaudio2 until this is sorted (rama)
+	// portaudio occasionally has issues selecting the proper default audio device.
+	// let's use xaudio2 until this is sorted (rama)
 
-    //	CfgReadStr(L"OUTPUT", L"Output_Module", omodid, 127, PortaudioOut->GetIdent());
-    if (IsWindows8OrGreater())
-        CfgReadStr(L"OUTPUT", L"Output_Module", omodid, 127, XAudio2Out->GetIdent());
-    else
-        CfgReadStr(L"OUTPUT", L"Output_Module", omodid, 127, XAudio2_27_Out->GetIdent());
+//	if ( IsVistaOrGreater2() ) {		// XA2 for WinXP, morder modern gets Portaudio
+//		CfgReadStr(L"OUTPUT", L"Output_Module", omodid, 127, PortaudioOut->GetIdent());
+//	}
+//	else {
+		CfgReadStr(L"OUTPUT", L"Output_Module", omodid, 127, XAudio2Out->GetIdent());
+//	}
 
-    // find the driver index of this module:
-    OutputModule = FindOutputModuleById(omodid);
+	// find the driver index of this module:
+	OutputModule = FindOutputModuleById( omodid );
 
-    CfgReadStr(L"DSP PLUGIN", L"Filename", dspPlugin, 255, L"");
-    dspPluginModule = CfgReadInt(L"DSP PLUGIN", L"ModuleNum", 0);
-    dspPluginEnabled = CfgReadBool(L"DSP PLUGIN", L"Enabled", false);
+	CfgReadStr( L"DSP PLUGIN",L"Filename",dspPlugin,255,L"");
+	dspPluginModule = CfgReadInt(L"DSP PLUGIN",L"ModuleNum",0);
+	dspPluginEnabled= CfgReadBool(L"DSP PLUGIN",L"Enabled",false);
 
-    // Read DSOUNDOUT and WAVEOUT configs:
-    CfgReadStr(L"WAVEOUT", L"Device", Config_WaveOut.Device, L"default");
-    Config_WaveOut.NumBuffers = CfgReadInt(L"WAVEOUT", L"Buffer_Count", 4);
+	// Read DSOUNDOUT and WAVEOUT configs:
+	CfgReadStr( L"WAVEOUT", L"Device", Config_WaveOut.Device, L"default" );
+	Config_WaveOut.NumBuffers = CfgReadInt( L"WAVEOUT", L"Buffer_Count", 4 );
 
-    DSoundOut->ReadSettings();
-    PortaudioOut->ReadSettings();
+	DSoundOut->ReadSettings();
+	PortaudioOut->ReadSettings();
 
-    SoundtouchCfg::ReadSettings();
-    DebugConfig::ReadSettings();
+	SoundtouchCfg::ReadSettings();
+	DebugConfig::ReadSettings();
 
-    // Sanity Checks
-    // -------------
+	// Sanity Checks
+	// -------------
 
-    Clampify(SndOutLatencyMS, LATENCY_MIN, LATENCY_MAX);
+	Clampify( SndOutLatencyMS, LATENCY_MIN, LATENCY_MAX );
 
-    if (mods[OutputModule] == NULL) {
-        // Unsupported or legacy module.
-        fwprintf(stderr, L"* SPU2-X: Unknown output module '%s' specified in configuration file.\n", omodid);
-        fprintf(stderr, "* SPU2-X: Defaulting to DirectSound (%S).\n", DSoundOut->GetIdent());
-        OutputModule = FindOutputModuleById(DSoundOut->GetIdent());
-    }
+	if( mods[OutputModule] == NULL )
+	{
+		// Unsupported or legacy module.
+		fwprintf( stderr, L"* SPU2-X: Unknown output module '%s' specified in configuration file.\n", omodid );
+		fprintf( stderr, "* SPU2-X: Defaulting to DirectSound (%S).\n", DSoundOut->GetIdent() );
+		OutputModule = FindOutputModuleById( DSoundOut->GetIdent() );
+	}
 }
 
 /*****************************************************************************/
